@@ -23,13 +23,13 @@ public class TimeSLList {
 
     public static void timeGetLast() {
         // TODO: YOUR CODE HERE
-        AList<Integer> Ns = new AList();
-        AList<Double> times = new AList();
-        AList<Integer> opCounts = new AList();
-        SLList<Integer> test = new SLList();
+        AList<Integer> Ns = new AList<>();
+        AList<Double> times = new AList<>();
+        AList<Integer> opCounts = new AList<>();
+        SLList<Integer> test;
         int opCount;
-        Double StartTime = 0.0;
-        Double EndTime = 0.0;
+        double StartTime;
+        double EndTime;
         int M = 10000;
 
 
@@ -38,9 +38,9 @@ public class TimeSLList {
             Ns.addLast(i*1000);
         }
         for (int j = 0 ; j < Ns.size(); j++ ){
-            test = new SLList();
+            test = new SLList<>();
             opCount = 0;
-            for (int k = 0; k < (int)Ns.get(j); k++) {
+            for (int k = 0; k < Ns.get(j); k++) {
                 test.addLast(k);
             }
             StartTime = sw.elapsedTime();

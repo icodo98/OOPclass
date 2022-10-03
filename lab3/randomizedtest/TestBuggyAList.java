@@ -14,8 +14,8 @@ public class TestBuggyAList {
   // YOUR TESTS HERE
     @Test
     public void testThreeAddThreeRemove(){
-        AList CorrectAList = new AList<Integer>();
-        BuggyAList WrongAList = new BuggyAList<Integer>();
+        AList<Integer> CorrectAList = new AList<>();
+        BuggyAList<Integer> WrongAList = new BuggyAList<>();
 
         for (int k = 4; k <7 ; k++) {
             CorrectAList.addLast(k);
@@ -42,26 +42,24 @@ public class TestBuggyAList {
                 //System.out.println("addLast(" + randVal + ")");
             } else if (operationNumber == 1) {
                 // size
-                int csize = CorrectAList.size();
-                int wsize = WrongAList.size();
-                assertEquals(csize,wsize);
+                int Csize = CorrectAList.size();
+                int Wsize = WrongAList.size();
+                assertEquals(Csize,Wsize);
                 //System.out.println("size: " + csize);
             } else if (operationNumber == 2) {
                 //getLast
-                if(CorrectAList.size() == 0) continue;
-                else {
-                    int getcVal = CorrectAList.getLast();
-                    int getwVal = WrongAList.getLast();
-                    assertEquals(getcVal,getwVal);
+                if(CorrectAList.size() != 0) {
+                    int getCVal = CorrectAList.getLast();
+                    int getWVal = WrongAList.getLast();
+                    assertEquals(getCVal,getWVal);
                     //System.out.println("getLast(" + getcVal + ")");
                 }
             } else if (operationNumber == 3) {
                 //removeLast
-                if(CorrectAList.size() == 0) continue;
-                else {
-                    int removedcVal = CorrectAList.removeLast();
-                    int removedwVal = WrongAList.removeLast();
-                    assertEquals(removedwVal,removedcVal);
+                if(CorrectAList.size() != 0) {
+                    int removedCVal = CorrectAList.removeLast();
+                    int removedWVal = WrongAList.removeLast();
+                    assertEquals(removedWVal,removedCVal);
                     //System.out.println("removeLast(" + removedcVal + ")");
                 }
             }

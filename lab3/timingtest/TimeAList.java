@@ -25,10 +25,10 @@ public class TimeAList {
 
     public static void timeAListConstruction() {
         // TODO: YOUR CODE HERE
-        AList Ns = new AList<Integer>();
-        AList times = new AList<Double>();
-        AList opCounts = new AList<Integer>();
-        AList test = new AList();
+        AList<Integer> Ns = new AList();
+        AList<Double> times = new AList();
+        AList<Integer> opCounts = new AList();
+        AList<Integer> test = new AList();
         int opCount = 0;
         Double StartTime = 0.0;
         Double EndTime = 0.0;
@@ -39,7 +39,7 @@ public class TimeAList {
             Ns.addLast(i*1000);
         }
         for (int j = 0 ; j < Ns.size(); j++ ){
-            test = new AList<Integer>();
+            test = new AList();
             opCount = 0;
             StartTime = sw.elapsedTime();
             for (int k = 0; k < (int)Ns.get(j); k++) {

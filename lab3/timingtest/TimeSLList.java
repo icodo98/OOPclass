@@ -31,8 +31,6 @@ public class TimeSLList {
         double StartTime;
         double EndTime;
         int M = 10000;
-
-
         Stopwatch sw = new Stopwatch();
         for (int i = 1; i < 256; i *= 2) {
             Ns.addLast(i*1000);

@@ -116,6 +116,21 @@ public class LinkedListDeque<T> {
          
      }
     /**
+     * Same as get, but uses recursion.
+     * Implement with helper method that finds the target Node with recursion.
+     */
+    public T getRecursive(int index){
+        DNode<T> targetNode = getRecursive(SentinelNode.next,index);
+        if(targetNode == null) return null;
+        else return targetNode.data;
+
+    }
+    private DNode<T> getRecursive(DNode<T> node, int index){
+        if(index == 0) return node;
+        if(node == this.SentinelNode) return null;
+        return getRecursive(node.next, --index);
+    };
+    /**
      * Returns an iterator
      */
     public Iterator<T> iterator(){

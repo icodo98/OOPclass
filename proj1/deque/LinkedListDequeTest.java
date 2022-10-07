@@ -13,7 +13,6 @@ public class LinkedListDequeTest {
     @Test
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.
-     *
      * && is the "and" operation. */
     public void addIsEmptySizeTest() {
         LinkedListDeque<String> lld1 = new LinkedListDeque<String>();
@@ -154,5 +153,29 @@ public class LinkedListDequeTest {
         lld1.removeLast();
         assertEquals(3, (int)lld1.get(2));
         assertEquals(null,lld1.get(4));
+    }
+    @Test
+    public void getRecursionTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        for (int i = 0; i < 5 ; i++) {
+            lld1.addLast(i);
+        }
+        assertEquals(0, (int)lld1.getRecursive(0));
+        assertEquals(1, (int)lld1.getRecursive(1));
+        assertEquals(2, (int)lld1.getRecursive(2));
+        assertEquals(3, (int)lld1.getRecursive(3));
+        assertEquals(4, (int)lld1.getRecursive(4));
+    }
+    @Test
+    public void getRecursionAddandRemoveTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        for (int i = 0; i < 5 ; i++) {
+            lld1.addLast(i);
+        }
+        lld1.removeFirst();
+        assertEquals(1, (int)lld1.getRecursive(0));
+        lld1.removeLast();
+        assertEquals(3, (int)lld1.getRecursive(2));
+        assertEquals(null,lld1.getRecursive(4));
     }
 }

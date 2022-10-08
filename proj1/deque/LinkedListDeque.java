@@ -142,21 +142,22 @@ public class LinkedListDeque<T> {
      */
     public boolean equals(Object obj) {
         boolean isDeque = obj instanceof LinkedListDeque;
-        boolean isSameOrder = false;
+        boolean isSameOrder = true;
+        boolean isSameSize = false;
         DNode<T> thisNode = SentinelNode.next;
         LinkedListDeque<T> testingObj = new LinkedListDeque<>();
         int i = 0;
         if(isDeque){
             testingObj = (LinkedListDeque<T>) obj;
         }
-        while (thisNode != SentinelNode && i > testingObj.size()) {
-            thisNode.data.equals(testingObj.get(i));
+        while (thisNode != SentinelNode && i < testingObj.size()) {
+            if(!thisNode.data.equals(testingObj.get(i))) isSameOrder = false;
             i++;
             thisNode = thisNode.next;
         }
-        if((i == testingObj.size()) && (testingObj.size() == this.size) ) isSameOrder = true;
+        if((i == testingObj.size()) && (testingObj.size() == this.size) ) isSameSize = true;
 
 
-        return isSameOrder & isDeque;
+        return isSameOrder && isDeque && isSameSize;
     }
 }

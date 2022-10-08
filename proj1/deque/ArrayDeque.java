@@ -1,5 +1,7 @@
 package deque;
 
+import net.sf.saxon.trans.SymbolicName;
+
 import java.util.Iterator;
 
 public class ArrayDeque<T> {
@@ -44,10 +46,18 @@ public class ArrayDeque<T> {
      * New items array will contain a value starts with index 0.
      */
     private void resize(int capacity){
+        this.capacity = capacity;
         T[] temp = (T[]) new Object[capacity];
         int First = UpdateIndex(1,NextFirst);
-        System.arraycopy(items,First,temp,0,items.length - First);
-        System.arraycopy(items,0,temp,items.length - First,NextLast);
+        int Last = UpdateIndex(0,NextLast);
+        if(First > Last) {
+            System.arraycopy(items,First,temp,0,items.length - First);
+            System.arraycopy(items,0,temp,items.length - First,NextLast);
+        }
+        else {
+            System.arraycopy(items, First,temp,0,Last - First + 1);
+
+        }
         NextLast = size;
         NextFirst = temp.length - 1;
         items = temp;
@@ -109,10 +119,11 @@ public class ArrayDeque<T> {
      * @return
      */
     public T removeFirst() {
-        size--;
+        if(isEmpty()) return null;
         if(size < (int) (capacity * 0.25)){
             resize((int) (capacity * 0.5));
         }
+        size--;
         int currentFirst = UpdateIndex(1,NextFirst);
         NextFirst = currentFirst;
         return items[currentFirst];
@@ -122,10 +133,11 @@ public class ArrayDeque<T> {
      * @return
      */
     public T removeLast() {
-        size--;
+        if(isEmpty()) return null;
         if(size < (int) (capacity * 0.25)){
             resize((int) (capacity * 0.5));
         }
+        size--;
         int currentLast = UpdateIndex(0,NextLast);
         NextLast = currentLast;
         return items[currentLast];
@@ -157,9 +169,9 @@ public class ArrayDeque<T> {
      * @return
      */
     public boolean equals(Object o) {
-        if(o instanceof ArrayDeque) return false;
+        if(!(o instanceof ArrayDeque)) return false;
         boolean isSame = true;
-        ArrayDeque<T> testingObj = new ArrayDeque<>();
+        ArrayDeque<T> testingObj = (ArrayDeque<T>) o;
         if(this.size != testingObj.size()) return false;
         for (int i = 0; i < testingObj.size; i++) {
             if (!this.get(i).equals(testingObj.get(i))) isSame = false;

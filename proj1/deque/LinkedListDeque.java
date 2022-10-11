@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Iterable<T> {
+public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     private int size;
     private DNode<T> SentinelNode;
     private static class DNode<T>{
@@ -23,6 +23,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         SentinelNode.prev = SentinelNode;
         size = 0;
     }
+    @Override
     /**
      * Adds an item of type T to the FRONT of the deque. item is never null*/
     public void addFirst(T item){
@@ -35,7 +36,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         size++;
 
     }
-
+    @Override
     /**
      * Adds an item of type T to the BACK of the deque. item is never null */
     public void addLast(T item){
@@ -47,21 +48,14 @@ public class LinkedListDeque<T> implements Iterable<T> {
         SentinelNode.prev = temp;
         size++;
     }
-
-    /**
-     * Returns true if deque is empty.
-     */
-    public boolean isEmpty(){
-        if(size == 0) return true;
-        else return false;
-    }
-
+    @Override
     /**
      * Returns the number of items in the deque.
      */
     public int size(){
         return size;
     }
+    @Override
     /**
      * Prints the items in the deque from first to last, seperated by space.
      * Once all the items have been printed, print out a new line.
@@ -74,6 +68,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         }
         System.out.print("\n");
     }
+    @Override
     /**
      * Removes and returns the item at the front of the deque.
      * If no such item exists, returns null.
@@ -86,7 +81,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         size--;
         return data;
     }
-
+    @Override
     /**
      * Removes and returns the item at the back of the deque.
      * If no such item exists, returns null.
@@ -100,6 +95,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
         return data;
 
     }
+    @Override
     /**
      * Gets the item at the given index, where 0 is the front, 1 is the next.
      * If no such item exists, returns null. Must not alter the deque.
@@ -129,7 +125,8 @@ public class LinkedListDeque<T> implements Iterable<T> {
         if(index == 0) return node;
         if(node == this.SentinelNode) return null;
         return getRecursive(node.next, --index);
-    };
+    }
+    @Override
     /**
      * Returns an iterator
      */
@@ -154,6 +151,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
             return currentData;
         }
     }
+    @Override
     /**
      * Returns whether the parameter o is equal to the Deque.
      * o is consideted equal if Deque and if it contains the same contents in same order.

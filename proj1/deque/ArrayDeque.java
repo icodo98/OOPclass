@@ -4,7 +4,7 @@ import net.sf.saxon.trans.SymbolicName;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> {
+public class ArrayDeque<T> implements Iterable<T> ,Deque<T>{
     private int size;
     private int capacity;
     private T[] items;
@@ -62,6 +62,7 @@ public class ArrayDeque<T> {
         NextFirst = temp.length - 1;
         items = temp;
     }
+    @Override
     /**
      * Adds an item of type T to the front of the deque. You can assume that item is never null.
      */
@@ -73,7 +74,7 @@ public class ArrayDeque<T> {
         items[NextFirst] = item;
         NextFirst =  UpdateIndex(0,NextFirst);
     }
-
+    @Override
     /**
      * Adds an item of type T to the back of the deque. You can assume that item is never null.
      * @param item
@@ -86,15 +87,7 @@ public class ArrayDeque<T> {
         items[NextLast] = item;
         NextLast = UpdateIndex(1,NextLast);
     }
-
-    /**
-     * Returns true if deque is empty, false otherwise.
-     */
-    public boolean isEmpty() {
-        if(size == 0) return true;
-        else return false;
-    }
-
+    @Override
     /**
      * Returns the number of items in the deque.
      */
@@ -102,7 +95,7 @@ public class ArrayDeque<T> {
         return size;
 
     }
-
+    @Override
     /**
      * Prints the items in the deque from first to last, separated by a space.
      * Once all the items have been printed, print out a new line.
@@ -114,6 +107,7 @@ public class ArrayDeque<T> {
         }
         System.out.print("\n");
     }
+    @Override
     /**
      * Removes and returns the item at the front of the deque. If no such item exists, returns null.
      * @return
@@ -128,6 +122,7 @@ public class ArrayDeque<T> {
         NextFirst = currentFirst;
         return items[currentFirst];
     }
+    @Override
     /**
      *  Removes and returns the item at the back of the deque. If no such item exists, returns null.
      * @return
@@ -142,6 +137,7 @@ public class ArrayDeque<T> {
         NextLast = currentLast;
         return items[currentLast];
     }
+    @Override
     /**
      * Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth.
      * If no such item exists, returns null. Must not alter the deque!
@@ -152,7 +148,7 @@ public class ArrayDeque<T> {
         if(index >= items.length) index = index - items.length;
         return items[index];
     }
-
+    @Override
     /**
      *  The Deque objects we’ll make are iterable (i.e. Iterable<T>) so we must provide this method to return an iterator.
      * @return
@@ -178,7 +174,7 @@ public class ArrayDeque<T> {
             return returnItem;
         }
     }
-
+    @Override
     /**
      * Returns whether the parameter o is equal to the Deque.
      * o is considered equal if it is a Deque

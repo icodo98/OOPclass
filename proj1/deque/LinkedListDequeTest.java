@@ -36,11 +36,23 @@ public class LinkedListDequeTest {
 		lld1.printDeque();
 
     }
+    @Test
+    public void addTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+        for (int i = 1; i < 7 ; i++) {
+            lld1.addFirst(i);
+            assertEquals(i,lld1.size());
+        }
+        for (int i = 6; i >= 0 ; i--) {
+            assertEquals(i,lld1.size());
+            lld1.removeLast();
+        }
+
+    }
 
     @Test
     /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
     public void addRemoveTest() {
-
 
         LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
 		// should be empty
@@ -53,6 +65,10 @@ public class LinkedListDequeTest {
 		lld1.removeFirst();
 		// should be empty
 		assertTrue("lld1 should be empty after removal", lld1.isEmpty());
+        lld1.addLast(12);
+        lld1.addLast(14);
+        lld1.removeLast();
+        assertEquals(12, (int) lld1.get(0));
 
     }
 

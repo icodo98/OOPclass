@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> {
+public class LinkedListDeque<T> implements Iterable<T> {
     private int size;
     private DNode<T> SentinelNode;
     private static class DNode<T>{
@@ -134,30 +134,46 @@ public class LinkedListDeque<T> {
      * Returns an iterator
      */
     public Iterator<T> iterator(){
-        return null;
+        return new LLDequeIterator();
+    }
+
+    private class LLDequeIterator implements Iterator<T>{
+        private DNode<T> currentNode;
+        public LLDequeIterator (){
+            currentNode = SentinelNode.next;
+        };
+        @Override
+        public boolean hasNext() {
+            if(currentNode.next == SentinelNode) return false;
+            else return true;
+        }
+        @Override
+        public T next(){
+            T currentData = currentNode.data;
+            currentNode = currentNode.next;
+            return currentData;
+        }
     }
     /**
      * Returns whether the parameter o is equal to the Deque.
      * o is consideted equal if Deque and if it contains the same contents in same order.
      */
     public boolean equals(Object obj) {
-        boolean isDeque = obj instanceof LinkedListDeque;
-        boolean isSameOrder = true;
-        boolean isSameSize = false;
-        DNode<T> thisNode = SentinelNode.next;
-        LinkedListDeque<T> testingObj = new LinkedListDeque<>();
-        int i = 0;
-        if(isDeque){
-            testingObj = (LinkedListDeque<T>) obj;
+        if (obj instanceof LinkedListDeque){
+            //check size
+            LinkedListDeque<T> testingObj = (LinkedListDeque<T>) obj;
+            if(testingObj.size() != this.size) return false;
+            Iterator<T> Titerator = testingObj.iterator();
+            T testdata;
+            for(T x : this){
+                if(Titerator.hasNext()){
+                    testdata = Titerator.next();
+                    if(testdata != x) return false;
+                }
+            }
+            return true;
         }
-        while (thisNode != SentinelNode && i < testingObj.size()) {
-            if(!thisNode.data.equals(testingObj.get(i))) isSameOrder = false;
-            i++;
-            thisNode = thisNode.next;
-        }
-        if((i == testingObj.size()) && (testingObj.size() == this.size) ) isSameSize = true;
-
-
-        return isSameOrder && isDeque && isSameSize;
+        return false;
     }
+
 }

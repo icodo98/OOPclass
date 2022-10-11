@@ -158,7 +158,25 @@ public class ArrayDeque<T> {
      * @return
      */
     public Iterator<T> iterator() {
-        return null;
+        return new ALDequeIterator();
+    }
+
+    private class ALDequeIterator implements Iterator<T> {
+        private int curPos;
+        public ALDequeIterator(){
+            curPos = UpdateIndex(1,NextFirst);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return curPos <= UpdateIndex(0,NextLast);
+        }
+        @Override
+        public T next(){
+            T returnItem = items[curPos];
+            curPos = UpdateIndex(1,curPos);
+            return returnItem;
+        }
     }
 
     /**
@@ -169,13 +187,17 @@ public class ArrayDeque<T> {
      * @return
      */
     public boolean equals(Object o) {
-        if(!(o instanceof ArrayDeque)) return false;
-        boolean isSame = true;
-        ArrayDeque<T> testingObj = (ArrayDeque<T>) o;
-        if(this.size != testingObj.size()) return false;
-        for (int i = 0; i < testingObj.size; i++) {
-            if (!this.get(i).equals(testingObj.get(i))) isSame = false;
+        if(o instanceof ArrayDeque) {
+            ArrayDeque<T> Tobj = (ArrayDeque<T>) o;
+            if(Tobj.size() == this.size){
+                Iterator<T> tIterator = Tobj.iterator();
+                Iterator<T> cIterator = this.iterator();
+                while (tIterator.hasNext() && cIterator.hasNext()){
+                    if(!cIterator.next().equals(tIterator.next())) return false;
+                }
+                return true;
+            }
         }
-        return isSame;
+        return false;
     }
 }

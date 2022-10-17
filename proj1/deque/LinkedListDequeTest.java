@@ -69,20 +69,6 @@ public class LinkedListDequeTest {
 		assertTrue("lld1 should be empty after removal", lld1.isEmpty());
 
     }
-    @Test
-    public void IteratorRemoveTest(){
-        Deque<Integer> lld1 = new LinkedListDeque<>();
-
-        for (int i = 0; i < 5 ; i++) {
-            lld1.addLast(i);
-        }
-        Iterator<Integer> test1 = lld1.iterator();
-        int i = 5;
-        while (test1.hasNext()){
-            lld1.addLast(i++);
-            test1.next();
-        }
-    }
 
     @Test
     /* Tests removing from an empty deque */

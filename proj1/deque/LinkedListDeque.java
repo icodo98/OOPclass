@@ -140,7 +140,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
             currentNode = LinkedListDeque.this.SentinelNode.next;
         };
         public boolean hasNext() {
-            if(currentNode.next == LinkedListDeque.this.SentinelNode) return false;
+            //if(currentNode.next == LinkedListDeque.this.SentinelNode) return false;
             if(currentNode == LinkedListDeque.this.SentinelNode) return false;
             else return true;
         }

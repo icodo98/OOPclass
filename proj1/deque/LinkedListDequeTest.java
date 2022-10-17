@@ -153,6 +153,8 @@ public class LinkedListDequeTest {
 
         assertFalse(test1.hasNext());
         assertFalse(test2.hasNext());
+        assertEquals(null,test1.next());
+        assertEquals(null,test2.next());
     }
 
     @Test

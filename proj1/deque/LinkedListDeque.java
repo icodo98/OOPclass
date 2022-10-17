@@ -141,16 +141,15 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
         };
         public boolean hasNext() {
             if(currentNode.next == LinkedListDeque.this.SentinelNode) return false;
+            if(currentNode == LinkedListDeque.this.SentinelNode) return false;
             else return true;
         }
 
         public T next(){
             T currentData = this.currentNode.data;
-            if(this.hasNext()) {
-                this.currentNode = this.currentNode.next;
-                return currentData;
-            }
-            else return null;
+            if(this.currentNode == LinkedListDeque.this.SentinelNode) return null;
+            this.currentNode = this.currentNode.next;
+            return currentData;
         }
     }
     @Override

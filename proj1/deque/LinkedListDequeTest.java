@@ -3,6 +3,7 @@ package deque;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -120,6 +121,20 @@ public class LinkedListDequeTest {
         boolean passed2 = false;
         assertEquals("Should return null when removeFirst is called on an empty Deque,", null, lld1.removeFirst());
         assertEquals("Should return null when removeLast is called on an empty Deque,", null, lld1.removeLast());
+
+    }
+    @Test
+    public void IteratorTest(){
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        for (int i = 0; i < 100; i++) {
+            lld1.addLast(i);
+        }
+        Iterator<Integer> test1 = lld1.iterator();
+
+        for (int i = 0; i < 99 ; i++) {
+            assertEquals(true,test1.hasNext());
+            assertEquals(i,(int) test1.next());
+        }
 
     }
 

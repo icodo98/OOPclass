@@ -62,11 +62,11 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
      */
     public void printDeque(){
         DNode<T> thisNode = this.SentinelNode.next;
-        while (thisNode != this.SentinelNode){
+        while (thisNode.next != this.SentinelNode){
             System.out.print(thisNode.data + " ");
             thisNode = thisNode.next;
         }
-        System.out.print("\n");
+        System.out.println(thisNode.data);
     }
     @Override
     /**
@@ -139,12 +139,11 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
         public LLDequeIterator (){
             currentNode = LinkedListDeque.this.SentinelNode.next;
         };
-        @Override
         public boolean hasNext() {
             if(currentNode.next == LinkedListDeque.this.SentinelNode) return false;
             else return true;
         }
-        @Override
+
         public T next(){
             T currentData = this.currentNode.data;
             this.currentNode = this.currentNode.next;

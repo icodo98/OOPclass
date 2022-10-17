@@ -145,7 +145,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
         }
 
         public T next(){
-            if(!this.hasNext()){
+            if(this.hasNext()){
                 T currentData = this.currentNode.data;
                 this.currentNode = this.currentNode.next;
                 return currentData;
@@ -166,10 +166,8 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
             Iterator<T> Titerator = testingObj.iterator();
             T testdata;
             for(T x : this){
-                if(Titerator.hasNext()){
-                    testdata = Titerator.next();
-                    if(testdata != x) return false;
-                }
+                testdata = Titerator.next();
+                if(testdata != x) return false;
             }
             return true;
         }

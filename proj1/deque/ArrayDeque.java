@@ -169,7 +169,7 @@ public class ArrayDeque<T> implements Iterable<T> ,Deque<T>{
         }
         @Override
         public T next(){
-            if(this.hasNext()) return null;
+            if(!this.hasNext()) return null;
             T returnItem = items[curPos];
             curPos = UpdateIndex(1,curPos);
             return returnItem;

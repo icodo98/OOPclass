@@ -151,7 +151,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
                 this.currentNode = this.currentNode.next;
                 return currentData;
             }
-            else return null;
+            else throw new NoSuchElementException();
         }
     }
     @Override

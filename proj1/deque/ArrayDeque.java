@@ -1,7 +1,5 @@
 package deque;
 
-import net.sf.saxon.trans.SymbolicName;
-
 import java.util.Iterator;
 
 public class ArrayDeque<T> implements Iterable<T> ,Deque<T>{

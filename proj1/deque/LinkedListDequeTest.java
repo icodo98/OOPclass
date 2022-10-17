@@ -36,6 +36,18 @@ public class LinkedListDequeTest {
 		lld1.printDeque();
 
     }
+    @Test
+    public void addRemoveFirstTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
+        for (int i = 0; i < 10000 ; i++) {
+            lld1.addFirst(i);
+        }
+        for (int i = 9999; i >= 0 ; i--) {
+            assertEquals(i, (int) lld1.removeFirst());
+            assertEquals(i,lld1.size());
+        }
+        assertEquals(true,lld1.isEmpty());
+    }
 
     @Test
     /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
@@ -49,6 +61,7 @@ public class LinkedListDequeTest {
 		lld1.addFirst(10);
 		// should not be empty
 		assertFalse("lld1 should contain 1 item", lld1.isEmpty());
+        assertEquals(1,lld1.size());
 
 		lld1.removeFirst();
 		// should be empty

@@ -164,12 +164,15 @@ public class ArrayDeque<T> implements Iterable<T> ,Deque<T>{
 
         @Override
         public boolean hasNext() {
-            return !(curPos == UpdateIndex(0,NextLast));
+            if(curPos == UpdateIndex(0,NextLast)) return false;
+            if(curPos == NextLast) return false;
+            else return true;
         }
         @Override
         public T next(){
+            if(curPos == NextLast) return null;
             T returnItem = items[curPos];
-            if(this.hasNext()) curPos = UpdateIndex(1,curPos);
+            curPos = UpdateIndex(1,curPos);
             return returnItem;
         }
     }

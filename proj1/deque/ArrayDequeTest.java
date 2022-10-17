@@ -42,7 +42,7 @@ public class ArrayDequeTest {
         lld2.addFirst("First");
         lld2.addFirst("Second");
         lld2.addFirst("Third");
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 5; i++) {
             lld1.addLast(i);
         }
 
@@ -53,8 +53,10 @@ public class ArrayDequeTest {
             assertEquals(true,test1.hasNext());
             assertEquals(true,test2.hasNext());
         }
-        for (int i = 0; i < 100 ; i++) {
-            assertEquals(i,(int) test1.next());
+        for (int i = 0; i < 5 ; i++) {
+            System.out.println("testcase for "+ i);
+            System.out.println(test1.hasNext());
+            System.out.println(test1.next());
         }
         assertEquals("Third",test2.next());
         assertEquals("Second",test2.next());
@@ -62,6 +64,8 @@ public class ArrayDequeTest {
 
         assertFalse(test1.hasNext());
         assertFalse(test2.hasNext());
+        assertEquals(null,test1.next());
+        assertEquals(null,test2.next());
     }
     @Test
     public void ResizeTest(){

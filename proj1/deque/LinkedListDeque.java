@@ -137,17 +137,17 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     private class LLDequeIterator implements Iterator<T>{
         private DNode<T> currentNode;
         public LLDequeIterator (){
-            currentNode = SentinelNode.next;
+            currentNode = LinkedListDeque.this.SentinelNode.next;
         };
         @Override
         public boolean hasNext() {
-            if(currentNode.next == SentinelNode) return false;
+            if(currentNode.next == LinkedListDeque.this.SentinelNode) return false;
             else return true;
         }
         @Override
         public T next(){
-            T currentData = currentNode.data;
-            currentNode = currentNode.next;
+            T currentData = this.currentNode.data;
+            this.currentNode = this.currentNode.next;
             return currentData;
         }
     }

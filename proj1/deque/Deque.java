@@ -18,5 +18,4 @@ public interface Deque<T>  {
 
     boolean equals(Object o);
 
-
 }

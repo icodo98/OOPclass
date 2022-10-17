@@ -1,6 +1,7 @@
 package deque;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     private int size;
@@ -146,8 +147,11 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
         public T next(){
             T currentData = this.currentNode.data;
-            if(this.hasNext()) this.currentNode = this.currentNode.next;
-            return currentData;
+            if(this.hasNext()) {
+                this.currentNode = this.currentNode.next;
+                return currentData;
+            }
+            else return null;
         }
     }
     @Override

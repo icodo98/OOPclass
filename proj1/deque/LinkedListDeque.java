@@ -18,10 +18,10 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     }
     public LinkedListDeque(){
-        SentinelNode = new DNode<>();
-        SentinelNode.next = SentinelNode;
-        SentinelNode.prev = SentinelNode;
-        size = 0;
+        this.SentinelNode = new DNode<>();
+        this.SentinelNode.next = this.SentinelNode;
+        this.SentinelNode.prev = this.SentinelNode;
+        this.size = 0;
     }
     @Override
     /**
@@ -29,11 +29,11 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     public void addFirst(T item){
         DNode<T> temp = new DNode<>();
         temp.data = item;
-        temp.prev = SentinelNode;
-        temp.next = SentinelNode.next;
-        SentinelNode.next.prev = temp;
-        SentinelNode.next = temp;
-        size++;
+        temp.prev = this.SentinelNode;
+        temp.next = this.SentinelNode.next;
+        this.SentinelNode.next.prev = temp;
+        this.SentinelNode.next = temp;
+        this.size++;
 
     }
     @Override
@@ -42,18 +42,18 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     public void addLast(T item){
         DNode<T> temp = new DNode<>();
         temp.data = item;
-        temp.next = SentinelNode;
-        temp.prev = SentinelNode.prev;
-        SentinelNode.prev.next = temp;
-        SentinelNode.prev = temp;
-        size++;
+        temp.next = this.SentinelNode;
+        temp.prev = this.SentinelNode.prev;
+        this.SentinelNode.prev.next = temp;
+        this.SentinelNode.prev = temp;
+        this.size++;
     }
     @Override
     /**
      * Returns the number of items in the deque.
      */
     public int size(){
-        return size;
+        return this.size;
     }
     @Override
     /**
@@ -61,8 +61,8 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
      * Once all the items have been printed, print out a new line.
      */
     public void printDeque(){
-        DNode<T> thisNode = SentinelNode.next;
-        while (thisNode != SentinelNode){
+        DNode<T> thisNode = this.SentinelNode.next;
+        while (thisNode != this.SentinelNode){
             System.out.print(thisNode.data + " ");
             thisNode = thisNode.next;
         }
@@ -74,11 +74,11 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
      * If no such item exists, returns null.
      */
     public T removeFirst(){
-        if(isEmpty()) return null;
-        T data = SentinelNode.next.data;
-        SentinelNode.next.next.prev = SentinelNode;
-        SentinelNode.next = SentinelNode.next.next;
-        size--;
+        if(this.size == 0) return null;
+        T data = this.SentinelNode.next.data;
+        this.SentinelNode.next.next.prev = this.SentinelNode;
+        this.SentinelNode.next = this.SentinelNode.next.next;
+        this.size--;
         return data;
     }
     @Override
@@ -87,11 +87,11 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
      * If no such item exists, returns null.
      */
     public T removeLast(){
-        if(isEmpty()) return null;
-        T data = SentinelNode.prev.data;
-        SentinelNode.prev.prev.next = SentinelNode;
-        SentinelNode.prev = SentinelNode.prev.prev;
-        size--;
+        if(this.size == 0) return null;
+        T data = this.SentinelNode.prev.data;
+        this.SentinelNode.prev.prev.next = this.SentinelNode;
+        this.SentinelNode.prev = this.SentinelNode.prev.prev;
+        this.size--;
         return data;
 
     }
@@ -102,7 +102,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
      */
      public T get(int index){
         DNode<T> tempNode = SentinelNode.next;
-        if(isEmpty()) return null;
+        if(this.size == 0) return null;
          while (index > 0 && tempNode != SentinelNode){
              tempNode = tempNode.next;
              index--;

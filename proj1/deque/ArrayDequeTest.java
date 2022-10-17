@@ -4,6 +4,7 @@ import jh61b.junit.In;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -32,6 +33,35 @@ public class ArrayDequeTest {
         System.out.println("Printing out deque: ");
         lld1.printDeque();
 
+    }
+    @Test
+    public void IteratorTest(){
+        Deque<Integer> lld1 = new ArrayDeque<>();
+        Deque<String> lld2 = new ArrayDeque<>();
+
+        lld2.addFirst("First");
+        lld2.addFirst("Second");
+        lld2.addFirst("Third");
+        for (int i = 0; i < 100; i++) {
+            lld1.addLast(i);
+        }
+
+        Iterator<Integer> test1 = lld1.iterator();
+        Iterator<String> test2 = lld2.iterator();
+
+        for (int i = 0; i <20 ; i++) {
+            assertEquals(true,test1.hasNext());
+            assertEquals(true,test2.hasNext());
+        }
+        for (int i = 0; i < 100 ; i++) {
+            assertEquals(i,(int) test1.next());
+        }
+        assertEquals("Third",test2.next());
+        assertEquals("Second",test2.next());
+        assertEquals("First",test2.next());
+
+        assertFalse(test1.hasNext());
+        assertFalse(test2.hasNext());
     }
     @Test
     public void ResizeTest(){

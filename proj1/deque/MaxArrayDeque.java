@@ -18,7 +18,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T>{
         if(this.isEmpty()) return null;
         T maxVal = (T) this.get(0);
         for (T x : this){
-            if(compare.compare(maxVal,x) > 0){
+            if(this.compare.compare(maxVal,x) < 0){
                 maxVal = x;
             }
         }

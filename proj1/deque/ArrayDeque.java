@@ -100,10 +100,11 @@ public class ArrayDeque<T> implements Iterable<T> ,Deque<T>{
      */
     public void printDeque() {
         int currentIndex = UpdateIndex(1,NextFirst);
-        while (currentIndex < NextLast){
+        int Last = UpdateIndex(0,NextLast);
+        while (currentIndex < Last){
             System.out.print(items[currentIndex++] + " ");
         }
-        System.out.print("\n");
+        System.out.println(items[currentIndex]);
     }
     @Override
     /**

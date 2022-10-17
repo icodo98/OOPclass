@@ -126,16 +126,31 @@ public class LinkedListDequeTest {
     @Test
     public void IteratorTest(){
         Deque<Integer> lld1 = new LinkedListDeque<>();
+        Deque<String> lld2 = new LinkedListDeque<>();
+
+        lld2.addFirst("First");
+        lld2.addFirst("Second");
+        lld2.addFirst("Third");
         for (int i = 0; i < 100; i++) {
             lld1.addLast(i);
         }
-        Iterator<Integer> test1 = lld1.iterator();
 
-        for (int i = 0; i < 99 ; i++) {
+        Iterator<Integer> test1 = lld1.iterator();
+        Iterator<String> test2 = lld2.iterator();
+
+        for (int i = 0; i <20 ; i++) {
             assertEquals(true,test1.hasNext());
+            assertEquals(true,test2.hasNext());
+        }
+        for (int i = 0; i < 100 ; i++) {
             assertEquals(i,(int) test1.next());
         }
+        assertEquals("Third",test2.next());
+        assertEquals("Second",test2.next());
+        assertEquals("First",test2.next());
 
+        assertFalse(test1.hasNext());
+        assertFalse(test2.hasNext());
     }
 
     @Test

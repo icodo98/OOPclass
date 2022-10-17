@@ -146,7 +146,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
         public T next(){
             T currentData = this.currentNode.data;
-            this.currentNode = this.currentNode.next;
+            if(this.hasNext()) this.currentNode = this.currentNode.next;
             return currentData;
         }
     }

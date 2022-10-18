@@ -1,24 +1,22 @@
 package gh2;
 
-
+import deque.ArrayDeque;
 import deque.Deque;
-import deque.LinkedListDeque;
 
-//Note: This file will not compile until you complete the Deque implementations
-public class GuitarString implements Instruments{
+public class Drums implements Instruments {
     /** Constants. Do not change. In case you're curious, the keyword final
      * means the values cannot be changed at runtime. We'll discuss this and
      * other topics in lecture on Friday. */
     private static final int SR = 44100;      // Sampling Rate
-    private static final double DECAY = .996; // energy decay factor
+    private static final double DECAY = 1.0; // energy decay factor
     private int capacity;
 
     /* Buffer for storing sound data. */
-     private Deque<Double> buffer;
+    private Deque<Double> buffer;
 
     /* Create a guitar string of the given frequency.  */
-    public GuitarString(double frequency) {
-        buffer = new LinkedListDeque<>();
+    public Drums(double frequency) {
+        buffer = new ArrayDeque<>();
         this.capacity =(int) Math.round(SR/frequency);
         for (int i = 0; i < this.capacity ; i++) {
             buffer.addLast((double) 0);
@@ -39,11 +37,14 @@ public class GuitarString implements Instruments{
      * the Karplus-Strong algorithm.
      */
     public void tic() {
-        buffer.addLast((buffer.removeFirst()+buffer.get(0))*0.5*DECAY);
+        double NewDouble = (buffer.removeFirst()+buffer.get(0))*0.5*DECAY;
+        if(Math.random() < 0.5) buffer.addLast(NewDouble);
+        else buffer.addLast(-NewDouble);
     }
 
     /* Return the double at the front of the buffer. */
     public double sample() {
         return buffer.get(0);
     }
+
 }

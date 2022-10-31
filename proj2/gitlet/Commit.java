@@ -18,6 +18,10 @@ public class Commit {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided one example for `message`.
      */
+    private class Stage {
+
+    }
+
 
     /** The message of this Commit. */
     private String message;

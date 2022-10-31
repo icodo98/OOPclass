@@ -24,7 +24,8 @@ public class Repository {
     public static final File CWD = new File(System.getProperty("user.dir"));
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
-
+    /** The .gitlet/stageArea directory.*/
+    public static final File stageArea_DIR = Utils.join(GITLET_DIR,"stageArea");
     /* TODO: fill in the rest of this class. */
     /**
      * The function for handling init argument.
@@ -49,7 +50,9 @@ public class Repository {
      * @param Filename
      */
     public static void add(String Filename){
-        File AddedFile = Utils.join(GITLET_DIR,Filename);
+        File AddedFile = Utils.join(stageArea_DIR,Filename);
+        if(AddedFile.exists()){
+        }
 
     }
 

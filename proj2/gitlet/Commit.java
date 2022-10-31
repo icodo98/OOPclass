@@ -2,7 +2,9 @@ package gitlet;
 
 // TODO: any imports you need here
 
+import java.sql.Time;
 import java.util.Date; // TODO: You'll likely use this in this class
+import java.util.List;
 
 /** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -18,6 +20,9 @@ public class Commit {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided one example for `message`.
      */
+    private Time createdTime;
+    private String log;
+    private List<String> FileList;
     private class Stage {
 
     }

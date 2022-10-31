@@ -37,6 +37,7 @@ public class Repository {
     public static void init(){
         if(GITLET_DIR.exists()) Utils.exitWithError("A Gitlet version-control system already exists in the current directory.");
         GITLET_DIR.mkdir();
+        stageArea_DIR.mkdir();
         commit("initial commit");
     }
 
@@ -50,10 +51,13 @@ public class Repository {
      * @param Filename
      */
     public static void add(String Filename){
+        File AddingFile = Utils.join(CWD,Filename);
         File AddedFile = Utils.join(stageArea_DIR,Filename);
-        if(AddedFile.exists()){
-        }
 
+        if(AddingFile.exists()){
+            if(Utils.sha1(Utils.readContents(AddingFile)) == Utils.sha1(Utils.readContents(AddedFile))) return;
+            Utils.writeContents(AddedFile,Utils.readContents(AddingFile));
+        }
     }
 
     /**

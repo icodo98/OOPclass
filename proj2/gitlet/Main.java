@@ -10,6 +10,10 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO: what if args is empty?
+        if(args.length ==0){
+            Utils.exitWithError("Please enter a command.");
+        }
+
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
@@ -17,8 +21,11 @@ public class Main {
                 break;
             case "add":
                 // TODO: handle the `add [filename]` command
+
                 break;
             // TODO: FILL THE REST IN
+            default:
+                Utils.exitWithError("No command with that name exists.");
         }
     }
 }

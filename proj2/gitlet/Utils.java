@@ -229,6 +229,24 @@ class Utils {
     static GitletException error(String msg, Object... args) {
         return new GitletException(String.format(msg, args));
     }
+    /**
+     * Prints out MESSAGE and exits with error code -1.
+     * Note:
+     *     The functionality for erroring/exit codes is different within Gitlet
+     *     so DO NOT use this as a reference.
+     *     Refer to the spec for more information.
+     * @param message message to print
+     */
+    public static void exitWithError(String message) {
+        if (message != null && !message.equals("")) {
+            System.out.println(message);
+        }
+        System.exit(-1);
+    }
+    public static void incorrectOperand(){
+        exitWithError("Incorrect operands.");
+    }
+
 
     /** Print a message composed from MSG and ARGS as for the String.format
      *  method, followed by a newline. */

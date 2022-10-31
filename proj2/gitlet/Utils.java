@@ -246,6 +246,9 @@ class Utils {
     public static void incorrectOperand(){
         exitWithError("Incorrect operands.");
     }
+    public static void notInitialized(){
+        exitWithError("Not in an initialized Gitlet directory.");
+    }
 
 
     /** Print a message composed from MSG and ARGS as for the String.format

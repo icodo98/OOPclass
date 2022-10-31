@@ -26,4 +26,27 @@ public class Repository {
     public static final File GITLET_DIR = join(CWD, ".gitlet");
 
     /* TODO: fill in the rest of this class. */
+    /**
+     * The function for handling init argument.
+     * Creates a new Gitlet version-control system in the current directory.
+     * Automatically starts with one commit, "initial commit"
+     * will have a single branch: master, Timestamp : Unix Epoch
+     * if there is already a Gitlet version-control system exists, throw error.
+     */
+    public void init(){
+        if(GITLET_DIR.exists()) Utils.exitWithError("A Gitlet version-control system already exists in the current directory.");
+        GITLET_DIR.mkdir();
+        commit("initial commit");
+    }
+    public void commit(String msg){
+
+    }
+
+    /**
+     *
+     * @param Filename
+     */
+    public void add(String Filename){
+
+    }
 }

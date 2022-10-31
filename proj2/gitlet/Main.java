@@ -1,5 +1,6 @@
 package gitlet;
 
+
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  @author TODO
  */
@@ -17,11 +18,31 @@ public class Main {
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
-                // TODO: handle the `init` command
-
+                // handle the `init` command
+                if(args.length != 1) Utils.incorrectOperandError();
+                Repository.init();
                 break;
             case "add":
-                // TODO: handle the `add [filename]` command
+                // handle the `add [filename]` command
+                if(args.length != 2) Utils.incorrectOperandError();
+                String Filename = args[1];
+                Repository.add(Filename);
+                break;
+            case "commit":
+                // TODO: hadle the 'commit [mssage]' command
+                if(args.length != 2) Utils.incorrectOperandError();
+
+                break;
+            case "rm":
+
+                break;
+            case "log":
+
+                break;
+            case "status":
+
+                break;
+            case "checkout":
 
                 break;
             // TODO: FILL THE REST IN

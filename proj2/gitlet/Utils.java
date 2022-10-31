@@ -243,7 +243,7 @@ class Utils {
         }
         System.exit(-1);
     }
-    public static void incorrectOperand(){
+    public static void incorrectOperandError(){
         exitWithError("Incorrect operands.");
     }
     public static void notInitialized(){

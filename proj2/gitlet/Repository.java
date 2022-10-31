@@ -33,20 +33,31 @@ public class Repository {
      * will have a single branch: master, Timestamp : Unix Epoch
      * if there is already a Gitlet version-control system exists, throw error.
      */
-    public void init(){
+    public static void init(){
         if(GITLET_DIR.exists()) Utils.exitWithError("A Gitlet version-control system already exists in the current directory.");
         GITLET_DIR.mkdir();
         commit("initial commit");
     }
-    public void commit(String msg){
+
+
+    /**
+     * Adds a copy of the file as it currently exists to the staging area.
+     * Adding an already-existed file overwrites the previous entry in the staging area with the new contents.
+     * If current working version is identical with current commit, do not add.
+     * Only one file may be added at a time.
+     * if the file does not exist, throw error.
+     * @param Filename
+     */
+    public static void add(String Filename){
+        File AddedFile = Utils.join(GITLET_DIR,Filename);
 
     }
 
     /**
      *
-     * @param Filename
+     * @param msg
      */
-    public void add(String Filename){
+    public static void commit(String msg){
 
     }
 }

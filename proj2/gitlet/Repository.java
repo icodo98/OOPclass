@@ -1,6 +1,10 @@
 package gitlet;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 import static gitlet.Utils.*;
 
 // TODO: any imports you need here
@@ -25,7 +29,8 @@ public class Repository {
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     /** The .gitlet/stageArea directory.*/
-    public static final File stageArea_DIR = Utils.join(GITLET_DIR,"stageArea");
+    public static final File stageArea_DIR = join(GITLET_DIR,"stageArea");
+    public static final File Commit_DIR = join(GITLET_DIR,"Commit");
     /* TODO: fill in the rest of this class. */
     /**
      * The function for handling init argument.
@@ -35,9 +40,10 @@ public class Repository {
      * if there is already a Gitlet version-control system exists, throw error.
      */
     public static void init(){
-        if(GITLET_DIR.exists()) Utils.exitWithError("A Gitlet version-control system already exists in the current directory.");
+        if(GITLET_DIR.exists()) exitWithError("A Gitlet version-control system already exists in the current directory.");
         GITLET_DIR.mkdir();
         stageArea_DIR.mkdir();
+        Commit_DIR.mkdir();
         commit("initial commit");
     }
 
@@ -51,13 +57,22 @@ public class Repository {
      * @param Filename
      */
     public static void add(String Filename){
-        File AddingFile = Utils.join(CWD,Filename);
-        File AddedFile = Utils.join(stageArea_DIR,Filename);
+        // check if that init run.
+        if(!stageArea_DIR.exists()) notInitializedError();
 
-        if(AddingFile.exists()){
-            if(Utils.sha1(Utils.readContents(AddingFile)) == Utils.sha1(Utils.readContents(AddedFile))) return;
-            Utils.writeContents(AddedFile,Utils.readContents(AddingFile));
+        File AddingFile = join(CWD,Filename);
+        File StagedFile = join(stageArea_DIR,Filename);
+
+        if(!AddingFile.exists()) exitWithError("File does not exist.");
+        try {
+            Files.copy(AddingFile.toPath(),StagedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e){
+            exitWithError("Staging the file fails");
         }
+
+    }
+    private static boolean isFileSame(File f1, File f2){
+        return  sha1(readContents(f1)) == sha1(readContents(f1));
     }
 
     /**

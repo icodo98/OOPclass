@@ -18,4 +18,9 @@ public class JUnitTest {
         Assert.assertEquals("86c1e224085b6d82831fe981e1d31390b403ff38",Utils.sha1(Utils.sha1(Utils.readContents(t1))));
 
     }
+    @Test
+    public void FileCopyTest(){
+        System.out.println(Repository.CWD);
+        Repository.add("Makefile");
+    }
 }

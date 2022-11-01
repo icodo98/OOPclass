@@ -246,7 +246,7 @@ class Utils {
     public static void incorrectOperandError(){
         exitWithError("Incorrect operands.");
     }
-    public static void notInitialized(){
+    public static void notInitializedError(){
         exitWithError("Not in an initialized Gitlet directory.");
     }
 

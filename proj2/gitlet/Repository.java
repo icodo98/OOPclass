@@ -80,6 +80,7 @@ public class Repository {
      * @param msg
      */
     public static void commit(String msg){
+        Commit currentCommit = new Commit(msg);
 
     }
 }

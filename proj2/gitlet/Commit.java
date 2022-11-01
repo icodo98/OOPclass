@@ -2,8 +2,9 @@ package gitlet;
 
 // TODO: any imports you need here
 
+import java.io.File;
+import java.sql.Date;
 import java.sql.Time;
-import java.util.Date; // TODO: You'll likely use this in this class
 import java.util.List;
 
 /** Represents a gitlet commit object.
@@ -20,18 +21,14 @@ public class Commit {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided one example for `message`.
      */
-    private Time createdTime;
+    private Date createdTime;
     private String log;
-    private List<String> FileList;
-    private class Stage {
-
-    }
-
-
-    /** The message of this Commit. */
+    private List<File> FileList;
     private String message;
-    public void Commit(String message){
+    public Commit(String message){
         this.message = message;
+
+
     }
 
 

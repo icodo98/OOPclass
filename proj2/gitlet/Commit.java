@@ -4,8 +4,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Time;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +26,18 @@ public class Commit implements Serializable {
     private Date createdTime;
     private String log;
     private List<File> FileList;
+    private Commit parent;
     private String message;
-    private Map<File, String> objMaps;
+    private Blob objMaps;
 
-    public Commit(String message, File f){
+    public Commit(String message){
         this.message = message;
-        this.objMaps = new HashMap<>();
-        objMaps.put(f,Utils.sha1(Utils.readContentsAsString(f)));
+        this.createdTime = new java.util.Date();
+        try {
+            this.parent = Utils.readObject(Utils.join(Repository.GITLET_DIR,"HEAD"),Commit.class);
+        } catch (IllegalArgumentException e){
+            this.parent = null;
+        }
     }
     public static void saveFile(File f){
 

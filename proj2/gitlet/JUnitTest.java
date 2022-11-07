@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 public class JUnitTest {
     @Test
@@ -22,9 +23,10 @@ public class JUnitTest {
 
     }
     @Test
-    public void FileCopyTest(){
-        System.out.println(Repository.CWD);
+    public void addTest(){
+        File f1 = Utils.join(Repository.CWD,"Makefile");
         Repository.add("Makefile");
+
     }
     @Test
     public void StringBuilderTest(){
@@ -43,13 +45,16 @@ public class JUnitTest {
         Commit.saveFile(t1);
     }
     @Test
-    public void CommitSaveClassTest(){
+    public void CommitSaveClassTest() throws IOException {
         File CWD = new File(System.getProperty("user.dir"));
         File t1 = Utils.join(CWD,"makefile");
 
-        Commit c1 = new Commit("messgae",t1);
+        Commit c1 = new Commit("messgae");
         File t2 = Utils.join(CWD,"test1");
+        System.out.println(t2.getCanonicalPath());
         Utils.writeObject(t2,c1);
+        t2.renameTo(Utils.join(CWD,
+                Utils.sha1(Utils.readContents(t2))));
 
         Commit c2 = Utils.readObject(t2,Commit.class);
 

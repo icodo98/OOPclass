@@ -1,9 +1,13 @@
 package gitlet;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 
 import static gitlet.Utils.*;
 
@@ -30,7 +34,7 @@ public class Repository {
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     /** The .gitlet/stageArea directory.*/
     public static final File stageArea_DIR = join(GITLET_DIR,"stageArea");
-    public static final File Commit_DIR = join(GITLET_DIR,"Commit");
+    public static final File Obj_DIR = join(GITLET_DIR,"Objects");
     /* TODO: fill in the rest of this class. */
     /**
      * The function for handling init argument.
@@ -42,9 +46,15 @@ public class Repository {
     public static void init(){
         if(GITLET_DIR.exists()) exitWithError("A Gitlet version-control system already exists in the current directory.");
         GITLET_DIR.mkdir();
-        stageArea_DIR.mkdir();
-        Commit_DIR.mkdir();
-        commit("initial commit");
+        try{
+            stageArea_DIR.createNewFile();
+            Blob fMap = new Blob();
+            Utils.writeObject(stageArea_DIR,fMap);
+            Obj_DIR.mkdir();
+        } catch (Exception e){
+            // Do nothing
+        }
+        new Commit("initial commit");
     }
 
 
@@ -61,26 +71,28 @@ public class Repository {
         if(!stageArea_DIR.exists()) notInitializedError();
 
         File AddingFile = join(CWD,Filename);
-        File StagedFile = join(stageArea_DIR,Filename);
+        Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
+        String AddingFile_sha1 = sha1(readContents(AddingFile));
 
         if(!AddingFile.exists()) exitWithError("File does not exist.");
-        try {
-            Files.copy(AddingFile.toPath(),StagedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e){
-            exitWithError("Staging the file fails");
+        if(Staged.Maps.containsKey(AddingFile)){
+            if(!Staged.Maps.get(AddingFile).equals(AddingFile_sha1)) {
+                Staged.Maps.replace(AddingFile, AddingFile_sha1);
+            }
         }
+        else {
+            Staged.Maps.put(AddingFile,AddingFile_sha1);
+        }
+        Utils.writeObject(stageArea_DIR,Staged);
 
     }
-    private static boolean isFileSame(File f1, File f2){
-        return  sha1(readContents(f1)) == sha1(readContents(f1));
-    }
-
     /**
      *
      * @param msg
      */
     public static void commit(String msg){
-        Commit currentCommit = new Commit(msg);
+        Commit NextCommit = new Commit(msg);
 
     }
+
 }

@@ -30,7 +30,7 @@ public class Repository {
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     /** The .gitlet/stageArea directory.*/
     public static final File stageArea_DIR = join(GITLET_DIR,"stageArea");
-    public static final File Commit_DIR = join(GITLET_DIR,"Commit");
+    public static final File Obj_DIR = join(GITLET_DIR,"Objects");
     /* TODO: fill in the rest of this class. */
     /**
      * The function for handling init argument.
@@ -43,8 +43,8 @@ public class Repository {
         if(GITLET_DIR.exists()) exitWithError("A Gitlet version-control system already exists in the current directory.");
         GITLET_DIR.mkdir();
         stageArea_DIR.mkdir();
-        Commit_DIR.mkdir();
-        commit("initial commit");
+        Obj_DIR.mkdir();
+       // commit("initial commit");
     }
 
 
@@ -79,8 +79,5 @@ public class Repository {
      *
      * @param msg
      */
-    public static void commit(String msg){
-        Commit currentCommit = new Commit(msg);
 
-    }
 }

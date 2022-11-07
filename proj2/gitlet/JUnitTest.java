@@ -39,12 +39,6 @@ public class JUnitTest {
 
     }
     @Test
-    public void CommitSaveFileTest(){
-        File CWD = new File(System.getProperty("user.dir"));
-        File t1 = Utils.join(CWD,"makefile");
-        Commit.saveFile(t1);
-    }
-    @Test
     public void CommitSaveClassTest() throws IOException {
         File CWD = new File(System.getProperty("user.dir"));
         File t1 = Utils.join(CWD,"makefile");
@@ -57,8 +51,13 @@ public class JUnitTest {
                 Utils.sha1(Utils.readContents(t2))));
 
         Commit c2 = Utils.readObject(t2,Commit.class);
-
-
+    }
+    @Test
+    public void rmTest(){
+        File CWD = new File(System.getProperty("user.dir"));
+        File t1 = Utils.join(CWD,"Test");
+        //Repository.rm("Test");
+        Repository.commit("TEst2");
     }
 
 }

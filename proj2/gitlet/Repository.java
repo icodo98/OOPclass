@@ -1,11 +1,7 @@
 package gitlet;
 
-import org.checkerframework.checker.units.qual.C;
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +31,7 @@ public class Repository {
     /** The .gitlet/stageArea directory.*/
     public static final File stageArea_DIR = join(GITLET_DIR,"stageArea");
     public static final File Obj_DIR = join(GITLET_DIR,"Objects");
+    public static final File HEAD = join(GITLET_DIR,"HEAD");
     /* TODO: fill in the rest of this class. */
     /**
      * The function for handling init argument.
@@ -48,13 +45,14 @@ public class Repository {
         GITLET_DIR.mkdir();
         try{
             stageArea_DIR.createNewFile();
+            HEAD.createNewFile();
             Blob fMap = new Blob();
             Utils.writeObject(stageArea_DIR,fMap);
             Obj_DIR.mkdir();
         } catch (Exception e){
             // Do nothing
         }
-        new Commit("initial commit");
+        commit("initial commit");
     }
 
 
@@ -72,13 +70,16 @@ public class Repository {
 
         File AddingFile = join(CWD,Filename);
         Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
+        Commit curCommit = Utils.readObject(HEAD,Commit.class);
+        Map<File,String> CommittedMap = curCommit.objMaps.Maps;
         String AddingFile_sha1 = sha1(readContents(AddingFile));
 
         if(!AddingFile.exists()) exitWithError("File does not exist.");
+        if(CommittedMap.containsKey(AddingFile)){
+            if(CommittedMap.get(AddingFile).equals(AddingFile_sha1)) return;
+        }
         if(Staged.Maps.containsKey(AddingFile)){
-            if(!Staged.Maps.get(AddingFile).equals(AddingFile_sha1)) {
-                Staged.Maps.replace(AddingFile, AddingFile_sha1);
-            }
+            Staged.Maps.replace(AddingFile, AddingFile_sha1);
         }
         else {
             Staged.Maps.put(AddingFile,AddingFile_sha1);
@@ -92,7 +93,30 @@ public class Repository {
      */
     public static void commit(String msg){
         Commit NextCommit = new Commit(msg);
+        NextCommit.id = sha1(serialize(NextCommit));
+        writeObject(HEAD,NextCommit);
 
     }
+
+    /**
+     * Unstage the file if it is currently staged for addition.
+     * If the file is tracked in the current commit, stage it for removal and remove the file from the working directory
+     * if the user has not already done so (do not remove it unless it is tracked in the current commit).
+     * @param filename
+     */
+    public static void rm(String filename){
+        File rmFile = join(CWD,filename);
+        Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
+        Commit curCommit = Utils.readObject(HEAD,Commit.class);
+        if(Staged.Maps.containsKey(rmFile)) Staged.Maps.remove(rmFile);
+        if(curCommit.objMaps.Maps.containsKey(rmFile)) Staged.removalMaps.add(rmFile);
+        writeObject(stageArea_DIR,Staged);
+        if(rmFile.exists()) rmFile.delete();
+    }
+    public static void ClearStageArea(){
+        Blob b = new Blob();
+        writeObject(stageArea_DIR,b);
+    }
+
 
 }

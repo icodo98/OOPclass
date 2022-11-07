@@ -29,12 +29,16 @@ public class Main {
                 Repository.add(Filename);
                 break;
             case "commit":
-                // TODO: hadle the 'commit [mssage]' command
+                // hadle the 'commit [mssage]' command
                 if(args.length != 2) Utils.incorrectOperandError();
-
+                String msg = args[1];
+                Repository.commit(msg);
                 break;
             case "rm":
-
+                // handle the 'rm [filename]' command
+                if(args.length != 2) Utils.incorrectOperandError();
+                String filename = args[1];
+                Repository.rm(filename);
                 break;
             case "log":
 

@@ -5,9 +5,9 @@ package gitlet;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import gitlet.Repository.*;
+
+import static gitlet.Repository.ClearStageArea;
 
 /** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -23,35 +23,41 @@ public class Commit implements Serializable {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided one example for `message`.
      */
+    public String id;
+    public Blob objMaps;
     private Date createdTime;
     private String log;
-    private List<File> FileList;
     private Commit parent;
     private String message;
-    private Blob objMaps;
+
 
     public Commit(String message){
         this.message = message;
         this.createdTime = new java.util.Date();
         try {
-            this.parent = Utils.readObject(Utils.join(Repository.GITLET_DIR,"HEAD"),Commit.class);
+            this.parent = Utils.readObject(Repository.HEAD,Commit.class);
+            this.objMaps = this.parent.objMaps;
         } catch (IllegalArgumentException e){
             this.parent = null;
+            this.objMaps = new Blob();
+        }
+        if(message != "initial commit"){
+            mergeStagedFile();
+            ClearStageArea();
         }
     }
-    public static void saveFile(File f){
 
-        String f_hash = Utils.sha1(Utils.readContentsAsString(f));
-        File obj_dir = Repository.Obj_DIR;
-        obj_dir = Utils.join(obj_dir,f_hash.substring(0,2));
 
-        if(!obj_dir.exists()) obj_dir.mkdir();
-        File fname = Utils.join(obj_dir, f_hash.substring(2));
-
-        try {
-            fname.createNewFile();
-        } catch (Exception e){
-            Utils.exitWithError("File save with commit fails");
+    /**
+     * merge Staged file with current Commits Maps.
+     */
+    private void mergeStagedFile(){
+        Blob Staged = Utils.readObject(Repository.stageArea_DIR,Blob.class);
+        if(Staged.Maps.size() == 0 && Staged.removalMaps.size() == 0) Utils.exitWithError("No changes added to the commit.");
+        this.objMaps.Maps.putAll(Staged.Maps);
+        for (File f : Staged.removalMaps
+             ) {
+            this.objMaps.Maps.remove(f);
         }
     }
 

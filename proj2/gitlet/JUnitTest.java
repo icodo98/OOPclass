@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JUnitTest {
     @Test
@@ -23,4 +25,19 @@ public class JUnitTest {
         System.out.println(Repository.CWD);
         Repository.add("Makefile");
     }
+    @Test
+    public void readContentswithDIRTest(){
+        File CWD = new File(System.getProperty("user.dir"));
+        List<String> filesinCWD = Utils.plainFilenamesIn(CWD);
+        List<File> flist = new ArrayList<>();
+        File Tfile = Utils.join(CWD,"Test");
+        for (String f: filesinCWD) {
+            File cuf = Utils.join(CWD,f);
+            //Utils.writeObject(Tfile,cuf);
+        }
+        File T = Utils.readObject(Tfile,File.class);
+
+
+    }
+
 }

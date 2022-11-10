@@ -241,7 +241,7 @@ class Utils {
         if (message != null && !message.equals("")) {
             System.out.println(message);
         }
-        System.exit(-1);
+        System.exit(0);
     }
     public static void incorrectOperandError(){
         exitWithError("Incorrect operands.");

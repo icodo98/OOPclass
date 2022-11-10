@@ -1,5 +1,7 @@
 package gitlet;
 
+import edu.princeton.cs.algs4.StdOut;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -108,6 +110,7 @@ public class Repository {
         File rmFile = join(CWD,filename);
         Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
         Commit curCommit = Utils.readObject(HEAD,Commit.class);
+        if(!Staged.Maps.containsKey(rmFile) && !curCommit.objMaps.Maps.containsKey(rmFile)) exitWithError("No reason to remove the file.");
         if(Staged.Maps.containsKey(rmFile)) Staged.Maps.remove(rmFile);
         if(curCommit.objMaps.Maps.containsKey(rmFile)) Staged.removalMaps.add(rmFile);
         writeObject(stageArea_DIR,Staged);
@@ -116,6 +119,10 @@ public class Repository {
     public static void ClearStageArea(){
         Blob b = new Blob();
         writeObject(stageArea_DIR,b);
+    }
+    public static void log(){
+        Commit head = Utils.readObject(HEAD,Commit.class);
+        System.out.println(head);
     }
 
 

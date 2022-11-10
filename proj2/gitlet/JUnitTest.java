@@ -59,5 +59,12 @@ public class JUnitTest {
         //Repository.rm("Test");
         Repository.commit("TEst2");
     }
+    @Test
+    public void logTest(){
+        //Repository.init();
+        //Repository.add("Makefile");
+        //Repository.commit("Test1");
+        Repository.log();
+    }
 
 }

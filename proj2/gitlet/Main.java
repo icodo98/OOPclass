@@ -41,7 +41,9 @@ public class Main {
                 Repository.rm(filename);
                 break;
             case "log":
-
+                // hadle the 'log' command
+                if(args.length != 1) Utils.incorrectOperandError();
+                Repository.log();
                 break;
             case "status":
 

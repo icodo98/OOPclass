@@ -1,11 +1,10 @@
 package gitlet;
 
-// TODO: any imports you need here
-
 import java.io.File;
 import java.io.Serializable;
-import java.util.Date;
-import gitlet.Repository.*;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import static gitlet.Repository.ClearStageArea;
 
@@ -25,15 +24,14 @@ public class Commit implements Serializable {
      */
     public String id;
     public Blob objMaps;
-    private Date createdTime;
-    private String log;
+    private ZonedDateTime createdTime;
     private Commit parent;
     private String message;
 
 
     public Commit(String message){
         this.message = message;
-        this.createdTime = new java.util.Date();
+        this.createdTime = ZonedDateTime.now();
         try {
             this.parent = Utils.readObject(Repository.HEAD,Commit.class);
             this.objMaps = this.parent.objMaps;
@@ -59,6 +57,38 @@ public class Commit implements Serializable {
              ) {
             this.objMaps.Maps.remove(f);
         }
+    }
+
+    /**
+     * Starting at the current head commit, display information about each commit
+     * backwards along the commit tree until the initial commit,
+     * following the first parent commit links, ignoring any second parents found in merge commits.
+     * This set of commit nodes is called the commit history.
+     * For every node in this history,
+     * the information it should display is the commit id, the time the commit was made, and the commit message.
+     * @return
+     */
+    @Override
+    public String toString(){
+        return toString(this);
+    }
+
+    private String toString(Commit curCommit) {
+        if(curCommit == null) return "";
+        StringBuilder returnSB = new StringBuilder("===");
+        returnSB.append("\n");
+        returnSB.append("commit ");
+        returnSB.append(this.id);
+        returnSB.append("\n");
+
+        returnSB.append("Date: ");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("eee MMM d HH:mm:ss yyyy xx", Locale.ENGLISH);
+        returnSB.append(this.createdTime.format(formatter));
+        returnSB.append("\n");
+
+        returnSB.append(this.message);
+        returnSB.append("\n\n");
+        return returnSB + toString(curCommit.parent);
     }
 
 

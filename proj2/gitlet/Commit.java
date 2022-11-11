@@ -2,11 +2,13 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import static gitlet.Repository.ClearStageArea;
+import static gitlet.Repository.*;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -51,8 +53,20 @@ public class Commit implements Serializable {
      * merge Staged file with current Commits Maps.
      */
     private void mergeStagedFile(){
-        Blob Staged = Utils.readObject(Repository.stageArea_DIR,Blob.class);
+        Blob Staged = Utils.readObject(Repository.stageArea_Maps,Blob.class);
+        File writeFile;
+        File stagedFile;
         if(Staged.Maps.size() == 0 && Staged.removalMaps.size() == 0) Utils.exitWithError("No changes added to the commit.");
+        for (File filename: Staged.Maps.keySet()) {
+            writeFile = Utils.join(Commit_DIR,Staged.Maps.get(filename));
+            stagedFile = Utils.join(stageArea_DIR,Staged.Maps.get(filename));
+            try {
+                writeFile.createNewFile();
+                Files.move(stagedFile.toPath(),writeFile.toPath(),REPLACE_EXISTING);
+            } catch (Exception e){
+                // Do nothing.
+            }
+        }
         this.objMaps.Maps.putAll(Staged.Maps);
         for (File f : Staged.removalMaps
              ) {
@@ -94,6 +108,7 @@ public class Commit implements Serializable {
     }
     public static Commit readFromID(String ID){
         File CommitFile = Utils.join(Repository.Commit_DIR,ID);
+        if(!CommitFile.exists()) Utils.exitWithError("No commit with that id exists.");
         return Utils.readObject(CommitFile,Commit.class);
     }
 

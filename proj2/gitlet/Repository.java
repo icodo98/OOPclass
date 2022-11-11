@@ -2,6 +2,8 @@ package gitlet;
 
 
 import java.io.File;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 
 import static gitlet.Utils.*;
@@ -28,6 +30,7 @@ public class Repository {
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     /** The .gitlet/stageArea directory.*/
+    public static final File stageArea_Maps = join(GITLET_DIR,"stageArea","Maps");
     public static final File stageArea_DIR = join(GITLET_DIR,"stageArea");
     public static final File Commit_DIR = join(GITLET_DIR,"Commits");
     public static final File HEAD = join(GITLET_DIR,"HEAD");
@@ -43,10 +46,11 @@ public class Repository {
         if(GITLET_DIR.exists()) exitWithError("A Gitlet version-control system already exists in the current directory.");
         GITLET_DIR.mkdir();
         try{
-            stageArea_DIR.createNewFile();
+            stageArea_DIR.mkdir();
+            stageArea_Maps.createNewFile();
             HEAD.createNewFile();
             Blob fMap = new Blob();
-            Utils.writeObject(stageArea_DIR,fMap);
+            Utils.writeObject(stageArea_Maps,fMap);
             Commit_DIR.mkdir();
         } catch (Exception e){
             // Do nothing
@@ -65,25 +69,29 @@ public class Repository {
      */
     public static void add(String Filename){
         // check if that init run.
-        if(!stageArea_DIR.exists()) notInitializedError();
+        if(!stageArea_Maps.exists()) notInitializedError();
 
-        File AddingFile = join(CWD,Filename);
-        Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
+        File AddingFile = new File(Filename);
+        if(!AddingFile.exists()) exitWithError("File does not exist.");
+
+        Blob Staged = Utils.readObject(stageArea_Maps,Blob.class);
         Commit curCommit = Utils.readObject(HEAD,Commit.class);
         Map<File,String> CommittedMap = curCommit.objMaps.Maps;
         String AddingFile_sha1 = sha1(readContents(AddingFile));
 
-        if(!AddingFile.exists()) exitWithError("File does not exist.");
+
         if(CommittedMap.containsKey(AddingFile)){
             if(CommittedMap.get(AddingFile).equals(AddingFile_sha1)) return;
         }
+
         if(Staged.Maps.containsKey(AddingFile)){
             Staged.Maps.replace(AddingFile, AddingFile_sha1);
         }
         else {
             Staged.Maps.put(AddingFile,AddingFile_sha1);
         }
-        Utils.writeObject(stageArea_DIR,Staged);
+        Utils.writeObject(stageArea_Maps,Staged);
+        Utils.writeContents(Utils.join(stageArea_DIR,AddingFile_sha1),readContents(AddingFile));
 
     }
     /**
@@ -112,12 +120,12 @@ public class Repository {
      */
     public static void rm(String filename){
         File rmFile = join(CWD,filename);
-        Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
+        Blob Staged = Utils.readObject(stageArea_Maps,Blob.class);
         Commit curCommit = Utils.readObject(HEAD,Commit.class);
         if(!Staged.Maps.containsKey(rmFile) && !curCommit.objMaps.Maps.containsKey(rmFile)) exitWithError("No reason to remove the file.");
         if(Staged.Maps.containsKey(rmFile)) Staged.Maps.remove(rmFile);
         if(curCommit.objMaps.Maps.containsKey(rmFile)) Staged.removalMaps.add(rmFile);
-        writeObject(stageArea_DIR,Staged);
+        writeObject(stageArea_Maps,Staged);
         if(rmFile.exists()) rmFile.delete();
     }
 
@@ -127,12 +135,12 @@ public class Repository {
     }
     public static void status(){
         String head = Utils.readObject(HEAD,Commit.class).id;
-        Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
+        Blob Staged = Utils.readObject(stageArea_Maps,Blob.class);
         StringBuilder sb = new StringBuilder("=== Branches ===\n*");
         sb.append(status(head));
-        sb.append("=== Staged Files ===");
         sb.append(Staged.toString());
-
+        sb.append("\n");
+        System.out.println(sb);
     }
     public static String status(String curCommitID){
         if(curCommitID == null) return "";
@@ -141,11 +149,29 @@ public class Repository {
         retrunSB.append("\n");
         return retrunSB + status(curCommit.parent);
     }
+    public static void checkout(String fileName){
+        Commit curCommit = Utils.readObject(HEAD,Commit.class);
+        File checkoutFile = new File(fileName);
+        if(!curCommit.objMaps.Maps.containsKey(checkoutFile)) Utils.exitWithError("File does noe exist in that commit");
+        String checkoutContents = readContentsAsString(Utils.join(Commit_DIR,curCommit.objMaps.Maps.get(checkoutFile)));
+        checkoutFile = Utils.join(CWD,fileName);
+        writeContents(checkoutFile,checkoutContents);
+
+    }
+    public static void checkout(String CommitId,String fileName){
+        Commit curCommit = Commit.readFromID(CommitId);
+        File checkoutFile = new File(fileName);
+        if(!curCommit.objMaps.Maps.containsKey(checkoutFile)) Utils.exitWithError("File does noe exist in that commit");
+        String checkoutContents = readContentsAsString(Utils.join(Commit_DIR,curCommit.objMaps.Maps.get(checkoutFile)));
+        checkoutFile = Utils.join(CWD,fileName);
+        writeContents(checkoutFile,checkoutContents);
+
+    }
 
 
     public static void ClearStageArea(){
         Blob b = new Blob();
-        writeObject(stageArea_DIR,b);
+        writeObject(stageArea_Maps,b);
     }
 
 

@@ -63,10 +63,28 @@ public class JUnitTest {
     public void logTest(){
         //Repository.init();
         //Repository.add("test1");
-        //Repository.commit("Test1");
+        //Repository.commit("Test3");
         //Repository.rm("test1");
-        Repository.commit("Test2");
-        Repository.log();
+        //Repository.commit("Test2");
+        //Repository.log();
+        Repository.checkout("fbf593e2d89bc99dc8f8753dc19cd7ee498d08a4","test1");
+        //Repository.status();
+    }
+    @Test
+    public void saveFileTest() throws IOException{
+        File CWD = new File(System.getProperty("user.dir"));
+        //File t1 = Utils.join(CWD,"Makefile");
+        File t1 = new File("Makefile");
+        File t2 = Utils.join(CWD,"Test");
+        String s =  t1.getCanonicalPath();
+        String s1 = t1.getName();
+//        File t3 = Utils.join(CWD,"gitlet","Makefile");
+        File t3 = Utils.join("gitlet","Makefile");
+
+        String s2 = t3.getCanonicalPath();
+        String s3 = t3.getName();
+
+        System.out.printf("fff");
     }
 
 }

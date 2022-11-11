@@ -51,6 +51,17 @@ public class Main {
                 Repository.status();
                 break;
             case "checkout":
+                switch (args.length) {
+                    case 3:
+                        Repository.checkout(args[2]);
+                        break;
+                    case 4:
+                        Repository.checkout(args[2],args[3]);
+                        break;
+                    default:
+                        Utils.incorrectOperandError();
+                }
+
 
                 break;
             // TODO: FILL THE REST IN

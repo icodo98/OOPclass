@@ -1,10 +1,7 @@
 package gitlet;
 
-import edu.princeton.cs.algs4.StdOut;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static gitlet.Utils.*;
@@ -116,13 +113,31 @@ public class Repository {
         writeObject(stageArea_DIR,Staged);
         if(rmFile.exists()) rmFile.delete();
     }
-    public static void ClearStageArea(){
-        Blob b = new Blob();
-        writeObject(stageArea_DIR,b);
-    }
+
     public static void log(){
         Commit head = Utils.readObject(HEAD,Commit.class);
         System.out.println(head);
+    }
+    public static void status(){
+        Commit head = Utils.readObject(HEAD,Commit.class);
+        Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
+        StringBuilder sb = new StringBuilder("=== Branches ===\n*");
+        sb.append(status(head));
+        sb.append("=== Staged Files ===");
+        sb.append(Staged.toString());
+
+    }
+    public static String status(Commit curCommit){
+        if(curCommit == null) return "";
+        StringBuilder retrunSB = new StringBuilder(curCommit.id);
+        retrunSB.append("\n");
+        return retrunSB + status(curCommit.parent);
+    }
+
+
+    public static void ClearStageArea(){
+        Blob b = new Blob();
+        writeObject(stageArea_DIR,b);
     }
 
 

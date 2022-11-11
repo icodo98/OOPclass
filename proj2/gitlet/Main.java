@@ -46,7 +46,9 @@ public class Main {
                 Repository.log();
                 break;
             case "status":
-
+                // hande the 'status' command
+                if(args.length != 1) Utils.incorrectOperandError();
+                Repository.status();
                 break;
             case "checkout":
 

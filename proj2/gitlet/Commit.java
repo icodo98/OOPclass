@@ -25,7 +25,7 @@ public class Commit implements Serializable {
     public String id;
     public Blob objMaps;
     private ZonedDateTime createdTime;
-    private Commit parent;
+    public Commit parent;
     private String message;
 
 

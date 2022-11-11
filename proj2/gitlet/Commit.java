@@ -78,15 +78,15 @@ public class Commit implements Serializable {
         StringBuilder returnSB = new StringBuilder("===");
         returnSB.append("\n");
         returnSB.append("commit ");
-        returnSB.append(this.id);
+        returnSB.append(curCommit.id);
         returnSB.append("\n");
 
         returnSB.append("Date: ");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("eee MMM d HH:mm:ss yyyy xx", Locale.ENGLISH);
-        returnSB.append(this.createdTime.format(formatter));
+        returnSB.append(curCommit.createdTime.format(formatter));
         returnSB.append("\n");
 
-        returnSB.append(this.message);
+        returnSB.append(curCommit.message);
         returnSB.append("\n\n");
         return returnSB + toString(curCommit.parent);
     }

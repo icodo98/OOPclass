@@ -25,7 +25,7 @@ public class Commit implements Serializable {
     public String id;
     public Blob objMaps;
     private ZonedDateTime createdTime;
-    public Commit parent;
+    public String parent;
     private String message;
 
 
@@ -33,8 +33,9 @@ public class Commit implements Serializable {
         this.message = message;
         this.createdTime = ZonedDateTime.now();
         try {
-            this.parent = Utils.readObject(Repository.HEAD,Commit.class);
-            this.objMaps = this.parent.objMaps;
+            Commit parent = Utils.readObject(Repository.HEAD,Commit.class);
+            this.parent = parent.id;
+            this.objMaps = parent.objMaps;
         } catch (IllegalArgumentException e){
             this.parent = null;
             this.objMaps = new Blob();
@@ -70,11 +71,12 @@ public class Commit implements Serializable {
      */
     @Override
     public String toString(){
-        return toString(this);
+        return toString(this.id);
     }
 
-    private String toString(Commit curCommit) {
-        if(curCommit == null) return "";
+    private String toString(String curCommitID) {
+        if(curCommitID == null) return "";
+        Commit curCommit = readFromID(curCommitID);
         StringBuilder returnSB = new StringBuilder("===");
         returnSB.append("\n");
         returnSB.append("commit ");
@@ -89,6 +91,10 @@ public class Commit implements Serializable {
         returnSB.append(curCommit.message);
         returnSB.append("\n\n");
         return returnSB + toString(curCommit.parent);
+    }
+    public static Commit readFromID(String ID){
+        File CommitFile = Utils.join(Repository.Commit_DIR,ID);
+        return Utils.readObject(CommitFile,Commit.class);
     }
 
 

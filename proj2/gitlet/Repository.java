@@ -29,7 +29,7 @@ public class Repository {
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     /** The .gitlet/stageArea directory.*/
     public static final File stageArea_DIR = join(GITLET_DIR,"stageArea");
-    public static final File Obj_DIR = join(GITLET_DIR,"Objects");
+    public static final File Commit_DIR = join(GITLET_DIR,"Commits");
     public static final File HEAD = join(GITLET_DIR,"HEAD");
     /* TODO: fill in the rest of this class. */
     /**
@@ -47,7 +47,7 @@ public class Repository {
             HEAD.createNewFile();
             Blob fMap = new Blob();
             Utils.writeObject(stageArea_DIR,fMap);
-            Obj_DIR.mkdir();
+            Commit_DIR.mkdir();
         } catch (Exception e){
             // Do nothing
         }
@@ -94,6 +94,13 @@ public class Repository {
         Commit NextCommit = new Commit(msg);
         NextCommit.id = sha1(serialize(NextCommit));
         writeObject(HEAD,NextCommit);
+        File CommitFile = Utils.join(Commit_DIR, NextCommit.id);
+        try{
+            CommitFile.createNewFile();
+            writeObject(CommitFile,NextCommit);
+        } catch (Exception e){
+            // Do nothing
+        }
 
     }
 
@@ -119,7 +126,7 @@ public class Repository {
         System.out.println(head);
     }
     public static void status(){
-        Commit head = Utils.readObject(HEAD,Commit.class);
+        String head = Utils.readObject(HEAD,Commit.class).id;
         Blob Staged = Utils.readObject(stageArea_DIR,Blob.class);
         StringBuilder sb = new StringBuilder("=== Branches ===\n*");
         sb.append(status(head));
@@ -127,8 +134,9 @@ public class Repository {
         sb.append(Staged.toString());
 
     }
-    public static String status(Commit curCommit){
-        if(curCommit == null) return "";
+    public static String status(String curCommitID){
+        if(curCommitID == null) return "";
+        Commit curCommit = Commit.readFromID(curCommitID);
         StringBuilder retrunSB = new StringBuilder(curCommit.id);
         retrunSB.append("\n");
         return retrunSB + status(curCommit.parent);

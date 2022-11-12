@@ -119,7 +119,7 @@ public class Repository {
      * @param filename
      */
     public static void rm(String filename){
-        File rmFile = join(CWD,filename);
+        File rmFile = new File(filename);
         Blob Staged = Utils.readObject(stageArea_Maps,Blob.class);
         Commit curCommit = Utils.readObject(HEAD,Commit.class);
         if(!Staged.Maps.containsKey(rmFile) && !curCommit.objMaps.Maps.containsKey(rmFile)) exitWithError("No reason to remove the file.");

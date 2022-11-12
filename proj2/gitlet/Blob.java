@@ -28,7 +28,7 @@ public class Blob implements Serializable {
             returnSB.append(Name);
             returnSB.append("\n");
         }
-        returnSB.append("=== Removed Files ===");
+        returnSB.append("=== Removed Files ===\n");
         for (String Name: removedFiles
              ) {
             returnSB.append(Name);

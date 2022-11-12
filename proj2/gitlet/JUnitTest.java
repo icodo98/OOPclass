@@ -1,5 +1,4 @@
 /*
-
 package gitlet;
 
 import org.junit.Assert;
@@ -66,10 +65,10 @@ public class JUnitTest {
         //Repository.init();
         //Repository.add("test1");
         //Repository.commit("Test3");
-        //Repository.rm("test1");
+        Repository.rm("test1");
         //Repository.commit("Test2");
         //Repository.log();
-        Repository.checkout("fbf593e2d89bc99dc8f8753dc19cd7ee498d08a4","test1");
+        //Repository.checkout("fbf593e2d89bc99dc8f8753dc19cd7ee498d08a4","test1");
         //Repository.status();
     }
     @Test
@@ -90,5 +89,5 @@ public class JUnitTest {
     }
 
 }
-
 */
+

@@ -56,7 +56,7 @@ public class Main {
                         Repository.checkout(args[2]);
                         break;
                     case 4:
-                        Repository.checkout(args[2],args[3]);
+                        Repository.checkout(args[1],args[3]);
                         break;
                     default:
                         Utils.incorrectOperandError();

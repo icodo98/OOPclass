@@ -1,3 +1,4 @@
+/*
 package gitlet;
 
 import org.junit.Assert;
@@ -88,3 +89,4 @@ public class JUnitTest {
     }
 
 }
+*/

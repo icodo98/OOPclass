@@ -10,7 +10,7 @@ public class Blob implements Serializable {
     public ArrayList<File> removalMaps = new ArrayList<>();
     @Override
     public String toString(){
-        StringBuilder returnSB = new StringBuilder("=== Staged Files ===\n");
+        StringBuilder returnSB = new StringBuilder("\n=== Staged Files ===\n");
         List<String> fileNames = new ArrayList<>();
         List<String> removedFiles = new ArrayList<>();
         for (File f: this.Maps.keySet()
@@ -28,7 +28,7 @@ public class Blob implements Serializable {
             returnSB.append(Name);
             returnSB.append("\n");
         }
-        returnSB.append("=== Removed Files ===\n");
+        returnSB.append("\n=== Removed Files ===\n");
         for (String Name: removedFiles
              ) {
             returnSB.append(Name);

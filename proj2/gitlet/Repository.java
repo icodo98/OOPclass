@@ -140,6 +140,9 @@ public class Repository {
         sb.append(status(head));
         sb.append(Staged.toString());
         sb.append("\n");
+        sb.append("=== Modifications Not Staged for Commit ===\n");
+        sb.append("\n=== Untracked Files ===\n");
+        sb.append("\n");
         System.out.println(sb);
     }
     public static String status(String curCommitID){

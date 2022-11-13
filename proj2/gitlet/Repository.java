@@ -2,24 +2,15 @@ package gitlet;
 
 
 import java.io.File;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Map;
 
 import static gitlet.Utils.*;
 
-// TODO: any imports you need here
-
 /** Represents a gitlet repository.
- *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
- *
- *  @author TODO
  */
 public class Repository {
     /**
-     * TODO: add instance variables here.
-     *
      * List all instance variables of the Repository class here with a useful
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided two examples for you.
@@ -34,7 +25,6 @@ public class Repository {
     public static final File stageArea_DIR = join(GITLET_DIR,"stageArea");
     public static final File Commit_DIR = join(GITLET_DIR,"Commits");
     public static final File HEAD = join(GITLET_DIR,"HEAD");
-    /* TODO: fill in the rest of this class. */
     /**
      * The function for handling init argument.
      * Creates a new Gitlet version-control system in the current directory.
@@ -65,7 +55,6 @@ public class Repository {
      * If current working version is identical with current commit, do not add.
      * Only one file may be added at a time.
      * if the file does not exist, throw error.
-     * @param Filename
      */
     public static void add(String Filename){
         // check if that init run.
@@ -94,10 +83,6 @@ public class Repository {
         Utils.writeContents(Utils.join(stageArea_DIR,AddingFile_sha1),readContents(AddingFile));
 
     }
-    /**
-     *
-     * @param msg
-     */
     public static void commit(String msg){
         Commit NextCommit = new Commit(msg);
         NextCommit.id = sha1(serialize(NextCommit));
@@ -170,12 +155,8 @@ public class Repository {
         writeContents(checkoutFile,checkoutContents);
 
     }
-
-
     public static void ClearStageArea(){
         Blob b = new Blob();
         writeObject(stageArea_Maps,b);
     }
-
-
 }

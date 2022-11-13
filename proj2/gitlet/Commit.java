@@ -3,6 +3,9 @@ package gitlet;
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -33,7 +36,6 @@ public class Commit implements Serializable {
 
     public Commit(String message){
         this.message = message;
-        this.createdTime = ZonedDateTime.now();
         try {
             Commit parent = Utils.readObject(Repository.HEAD,Commit.class);
             this.parent = parent.id;
@@ -43,8 +45,12 @@ public class Commit implements Serializable {
             this.objMaps = new Blob();
         }
         if(message != "initial commit"){
+            this.createdTime = ZonedDateTime.now();
             mergeStagedFile();
             ClearStageArea();
+        }
+        else {
+            this.createdTime = new Timestamp(0).toLocalDateTime().atZone(ZoneId.of("UTC"));
         }
     }
 

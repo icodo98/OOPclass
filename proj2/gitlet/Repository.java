@@ -84,7 +84,7 @@ public class Repository {
 
     }
     public static void commit(String msg){
-        if(msg.isBlank()) Utils.exitWithError("Please enter a commit message");
+        if(msg.isBlank()) Utils.exitWithError("Please enter a commit message.");
         Commit NextCommit = new Commit(msg);
         NextCommit.id = sha1(serialize(NextCommit));
         writeObject(HEAD,NextCommit);
@@ -142,7 +142,7 @@ public class Repository {
     public static void checkout(String fileName){
         Commit curCommit = Utils.readObject(HEAD,Commit.class);
         File checkoutFile = new File(fileName);
-        if(!curCommit.objMaps.Maps.containsKey(checkoutFile)) Utils.exitWithError("File does noe exist in that commit");
+        if(!curCommit.objMaps.Maps.containsKey(checkoutFile)) Utils.exitWithError("File does noe exist in that commit.");
         String checkoutContents = readContentsAsString(Utils.join(Commit_DIR,curCommit.objMaps.Maps.get(checkoutFile)));
         checkoutFile = Utils.join(CWD,fileName);
         writeContents(checkoutFile,checkoutContents);
@@ -151,7 +151,7 @@ public class Repository {
     public static void checkout(String CommitId,String fileName){
         Commit curCommit = Commit.readFromID(CommitId);
         File checkoutFile = new File(fileName);
-        if(!curCommit.objMaps.Maps.containsKey(checkoutFile)) Utils.exitWithError("File does noe exist in that commit");
+        if(!curCommit.objMaps.Maps.containsKey(checkoutFile)) Utils.exitWithError("File does noe exist in that commit.");
         String checkoutContents = readContentsAsString(Utils.join(Commit_DIR,curCommit.objMaps.Maps.get(checkoutFile)));
         checkoutFile = Utils.join(CWD,fileName);
         writeContents(checkoutFile,checkoutContents);

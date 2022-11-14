@@ -84,6 +84,7 @@ public class Repository {
 
     }
     public static void commit(String msg){
+        if(msg.isBlank()) Utils.exitWithError("Please enter a commit message");
         Commit NextCommit = new Commit(msg);
         NextCommit.id = sha1(serialize(NextCommit));
         writeObject(HEAD,NextCommit);
@@ -121,8 +122,9 @@ public class Repository {
     public static void status(){
         String head = Utils.readObject(HEAD,Commit.class).id;
         Blob Staged = Utils.readObject(stageArea_Maps,Blob.class);
-        StringBuilder sb = new StringBuilder("=== Branches ===\n*");
-        sb.append(status(head));
+        StringBuilder sb = new StringBuilder("=== Branches ===\n");
+        //sb.append(status(head));
+        sb.append("*master\n");
         sb.append(Staged.toString());
         sb.append("\n");
         sb.append("=== Modifications Not Staged for Commit ===\n");

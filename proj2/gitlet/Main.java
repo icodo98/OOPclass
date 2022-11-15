@@ -52,19 +52,21 @@ public class Main {
                 break;
             case "checkout":
                 switch (args.length) {
-                    case 3:
-                        Repository.checkout(args[2]);
-                        break;
-                    case 4:
-                        Repository.checkout(args[1],args[3]);
-                        break;
-                    default:
-                        Utils.incorrectOperandError();
+                    case 3 -> Repository.checkout(args[2]);
+                    case 4 -> Repository.checkout(args[1], args[3]);
+                    default -> System.out.println(args.length); //Utils.incorrectOperandError();
                 }
-
-
                 break;
-            // TODO: FILL THE REST IN
+            case "global-log":
+                // handel the 'global-log' command
+                if(args.length != 1) Utils.incorrectOperandError();
+                Repository.globalLog();
+                break;
+            case "find":
+                // handle the "find [commit msg]" command
+                if(args.length != 2) Utils.incorrectOperandError();
+                Repository.find(args[1]);
+                break;
             default:
                 Utils.exitWithError("No command with that name exists.");
         }

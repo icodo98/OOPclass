@@ -1,7 +1,10 @@
 package gitlet;
 
 
+import jdk.jshell.execution.Util;
+
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import static gitlet.Utils.*;
@@ -25,6 +28,7 @@ public class Repository {
     public static final File stageArea_DIR = join(GITLET_DIR,"stageArea");
     public static final File Commit_DIR = join(GITLET_DIR,"Commits");
     public static final File HEAD = join(GITLET_DIR,"HEAD");
+    public static final File MASTER = join(GITLET_DIR,"MASTER");
     /**
      * The function for handling init argument.
      * Creates a new Gitlet version-control system in the current directory.
@@ -39,6 +43,8 @@ public class Repository {
             stageArea_DIR.mkdir();
             stageArea_Maps.createNewFile();
             HEAD.createNewFile();
+            Utils.writeObject(HEAD,MASTER);
+            MASTER.createNewFile();
             Blob fMap = new Blob();
             Utils.writeObject(stageArea_Maps,fMap);
             Commit_DIR.mkdir();
@@ -64,7 +70,7 @@ public class Repository {
         if(!AddingFile.exists()) exitWithError("File does not exist.");
 
         Blob Staged = Utils.readObject(stageArea_Maps,Blob.class);
-        Commit curCommit = Utils.readObject(HEAD,Commit.class);
+        Commit curCommit = Utils.headCommit();
         Map<File,String> CommittedMap = curCommit.objMaps.Maps;
         String AddingFile_sha1 = sha1(readContents(AddingFile));
 
@@ -87,7 +93,8 @@ public class Repository {
         if(msg.isBlank()) Utils.exitWithError("Please enter a commit message.");
         Commit NextCommit = new Commit(msg);
         NextCommit.id = sha1(serialize(NextCommit));
-        writeObject(HEAD,NextCommit);
+        File curBranch = Utils.readObject(HEAD, File.class);
+        writeContents(curBranch,NextCommit.id);
         File CommitFile = Utils.join(Commit_DIR, NextCommit.id);
         try{
             CommitFile.createNewFile();
@@ -107,7 +114,7 @@ public class Repository {
     public static void rm(String filename){
         File rmFile = new File(filename);
         Blob Staged = Utils.readObject(stageArea_Maps,Blob.class);
-        Commit curCommit = Utils.readObject(HEAD,Commit.class);
+        Commit curCommit = Utils.headCommit();
         if(!Staged.Maps.containsKey(rmFile) && !curCommit.objMaps.Maps.containsKey(rmFile)) exitWithError("No reason to remove the file.");
         if(Staged.Maps.containsKey(rmFile)) Staged.Maps.remove(rmFile);
         if(curCommit.objMaps.Maps.containsKey(rmFile)) Staged.removalMaps.add(rmFile);
@@ -116,11 +123,22 @@ public class Repository {
     }
 
     public static void log(){
-        Commit head = Utils.readObject(HEAD,Commit.class);
+        Commit head = Utils.headCommit();
         System.out.println(head);
     }
+    public static void globalLog(){
+        for (String f: Utils.plainFilenamesIn(Commit_DIR)
+             ) {
+            try{
+                System.out.print(Commit.toStringSingle(f));
+            } catch (Exception e) {
+                //do nothing
+            }
+        }
+
+    }
     public static void status(){
-        String head = Utils.readObject(HEAD,Commit.class).id;
+        String head = Utils.headCommit().id;
         Blob Staged = Utils.readObject(stageArea_Maps,Blob.class);
         StringBuilder sb = new StringBuilder("=== Branches ===\n");
         //sb.append(status(head));
@@ -140,7 +158,7 @@ public class Repository {
         return retrunSB + status(curCommit.parent);
     }
     public static void checkout(String fileName){
-        Commit curCommit = Utils.readObject(HEAD,Commit.class);
+        Commit curCommit = Utils.headCommit();
         File checkoutFile = new File(fileName);
         if(!curCommit.objMaps.Maps.containsKey(checkoutFile)) Utils.exitWithError("File does noe exist in that commit.");
         String checkoutContents = readContentsAsString(Utils.join(Commit_DIR,curCommit.objMaps.Maps.get(checkoutFile)));
@@ -156,6 +174,23 @@ public class Repository {
         checkoutFile = Utils.join(CWD,fileName);
         writeContents(checkoutFile,checkoutContents);
 
+    }
+    public static void find(String commitMessage){
+        Commit curCommit;
+        boolean notFound = true;
+        for (String f: Utils.plainFilenamesIn(Commit_DIR)
+        ) {
+            try{
+                curCommit = Commit.readFromID(f);
+                if(commitMessage.equals(curCommit.message)) {
+                    System.out.println(curCommit.id);
+                    notFound = false;
+                }
+            } catch (Exception e) {
+                //do nothing
+            }
+        }
+        if(notFound) Utils.exitWithError("Found no commit with that message.");
     }
     public static void ClearStageArea(){
         Blob b = new Blob();

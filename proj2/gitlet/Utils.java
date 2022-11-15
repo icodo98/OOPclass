@@ -257,4 +257,13 @@ class Utils {
         System.out.printf(msg, args);
         System.out.println();
     }
+
+    /**
+     * Returns current HEAD Commit with HEAD.
+     */
+    static Commit headCommit(){
+        File curBranch = readObject(Repository.HEAD,File.class);
+        return Commit.readFromID(
+                readContentsAsString(curBranch));
+    }
 }

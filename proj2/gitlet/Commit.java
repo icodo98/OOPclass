@@ -29,15 +29,15 @@ public class Commit implements Serializable {
      */
     public String id;
     public Blob objMaps;
-    private ZonedDateTime createdTime;
+    public ZonedDateTime createdTime;
     public String parent;
-    private String message;
+    public String message;
 
 
     public Commit(String message){
         this.message = message;
         try {
-            Commit parent = Utils.readObject(Repository.HEAD,Commit.class);
+            Commit parent = Utils.headCommit();
             this.parent = parent.id;
             this.objMaps = parent.objMaps;
         } catch (IllegalArgumentException e){
@@ -93,6 +93,24 @@ public class Commit implements Serializable {
     public String toString(){
         return toString(this.id);
     }
+    public static String toStringSingle(String curCommitID) {
+        if(curCommitID == null) return "";
+        Commit curCommit = readFromID(curCommitID);
+        StringBuilder returnSB = new StringBuilder("===");
+        returnSB.append("\n");
+        returnSB.append("commit ");
+        returnSB.append(curCommit.id);
+        returnSB.append("\n");
+
+        returnSB.append("Date: ");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("eee MMM d HH:mm:ss yyyy xx", Locale.ENGLISH);
+        returnSB.append(curCommit.createdTime.format(formatter));
+        returnSB.append("\n");
+
+        returnSB.append(curCommit.message);
+        returnSB.append("\n\n");
+        return returnSB.toString();
+    }
 
     private String toString(String curCommitID) {
         if(curCommitID == null) return "";
@@ -114,9 +132,11 @@ public class Commit implements Serializable {
     }
     public static Commit readFromID(String ID){
         File CommitFile = Utils.join(Repository.Commit_DIR,ID);
-        if(!CommitFile.exists()) Utils.exitWithError("No commit with that id exists.");
+        if(!CommitFile.exists()) throw new IllegalArgumentException("No commit with that id exists."); //Utils.exitWithError("No commit with that id exists.");
         return Utils.readObject(CommitFile,Commit.class);
     }
+
+
 
 
     /* TODO: fill in the rest of this class. */

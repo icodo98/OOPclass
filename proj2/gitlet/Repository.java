@@ -1,10 +1,6 @@
 package gitlet;
 
-
-import jdk.jshell.execution.Util;
-
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
 import static gitlet.Utils.*;

@@ -46,15 +46,17 @@ public class Main {
                 Repository.log();
                 break;
             case "status":
-                // hande the 'status' command
+                // handle the 'status' command
                 if(args.length != 1) Utils.incorrectOperandError();
                 Repository.status();
                 break;
             case "checkout":
+                // handle the checkout command
                 switch (args.length) {
-                    case 3 -> Repository.checkout(args[2]);
-                    case 4 -> Repository.checkout(args[1], args[3]);
-                    default -> System.out.println(args.length); //Utils.incorrectOperandError();
+                    case 2 -> Repository.checkout(args[1]); //checkout [branch name]
+                    case 3 -> Repository.checkout(args[1], args[2]); //checkout -- [file name]
+                    case 4 -> Repository.checkout(args[1],args[2], args[3]); //checkout [commit id] -- [file name]
+                    default -> Utils.incorrectOperandError();
                 }
                 break;
             case "global-log":
@@ -66,6 +68,21 @@ public class Main {
                 // handle the "find [commit msg]" command
                 if(args.length != 2) Utils.incorrectOperandError();
                 Repository.find(args[1]);
+                break;
+            case "branch":
+                // handle the "branch [branch name]" command
+                if(args.length != 2) Utils.incorrectOperandError();
+                Repository.branch(args[1]);
+                break;
+            case "rm-branch":
+                // handle the "rm-branch [branch name]" command
+                if(args.length != 2) Utils.incorrectOperandError();
+                Repository.rmBranch(args[1]);
+                break;
+            case "reset":
+                // handle the "reset [commit id]" command
+                if(args.length != 2) Utils.incorrectOperandError();
+                Repository.reset(args[1]);
                 break;
             default:
                 Utils.exitWithError("No command with that name exists.");

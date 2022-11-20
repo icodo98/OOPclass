@@ -84,6 +84,11 @@ public class Main {
                 if(args.length != 2) Utils.incorrectOperandError();
                 Repository.reset(args[1]);
                 break;
+            case "merge":
+                // handle the "merge [branch name]" command
+                if(args.length != 2) Utils.incorrectOperandError();
+                Repository.merge(args[1]);
+                break;
             default:
                 Utils.exitWithError("No command with that name exists.");
         }

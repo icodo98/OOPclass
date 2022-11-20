@@ -1,11 +1,10 @@
 package gitlet;
 
+import net.sf.saxon.regex.History;
 import org.checkerframework.checker.units.qual.C;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static gitlet.Utils.*;
 
@@ -189,6 +188,9 @@ public class Repository {
         Utils.writeObject(HEAD, branch);
     }
 
+    /**
+     * Takes two commits. Overwrite files in first Commit with second commit. delete missing ones.
+     */
     private static void checkout3(Commit tarCommit1, Commit tarCommit2) {
         Set<File> filesSet = new HashSet<>();
         filesSet.addAll(tarCommit1.objMaps.Maps.keySet());
@@ -296,9 +298,44 @@ public class Repository {
         Commit curHead = Utils.headCommit();
         checkoutFailureCase3(resetCommit, curHead);
         checkout3(resetCommit,curHead);
-        writeObject(HEAD,Utils.join(GITLET_DIR,CommitID));
+        File curBranch = readObject(HEAD, File.class);
+        writeContents(curBranch,CommitID);
     }
+    public static void merge(String branchName){
+        String spiltPointID = spiltPoint(branchName);
+        String cur = Utils.headCommit().id;
+        String branch = readContentsAsString(join(GITLET_DIR,branchName));
+        if(spiltPointID.equals(cur)) {
+            checkout(branchName);
+            Utils.exitWithError("Current branch fast-forwarded.");
+        }
+        if(spiltPointID.equals(branch)){
+            Utils.exitWithError("Given branch is an ancestor of the current branch.");
+        }
 
+
+
+    }
+    private static String spiltPoint(String branchName){
+        File cur = readObject(HEAD,File.class);
+        File branch = Utils.join(GITLET_DIR,branchName);
+        ArrayList<String> curHistory = branchHistory(cur);
+        ArrayList<String> braHistory = branchHistory(branch);
+        curHistory.retainAll(braHistory);
+        return curHistory.get(curHistory.size() - 1);
+    }
+    private static ArrayList<String> branchHistory(File branch){
+        String curCommit = readContentsAsString(branch);
+        ArrayList<String> returnList = new ArrayList<>();
+        branchHistory(curCommit,returnList);
+        return returnList;
+    }
+    private static void branchHistory(String curCommitID, ArrayList<String> Lists){
+        if(curCommitID == null) return;
+        Commit curCommit = Commit.readFromID(curCommitID);
+        Lists.add(curCommit.id);
+        branchHistory(curCommit.parent,Lists);
+    }
     public static void ClearStageArea() {
         Blob b = new Blob();
         writeObject(stageArea_Maps, b);

@@ -1,8 +1,5 @@
 package gitlet;
 
-import net.sf.saxon.regex.History;
-import org.checkerframework.checker.units.qual.C;
-
 import java.io.File;
 import java.util.*;
 
@@ -101,13 +98,7 @@ public class Repository {
         File curBranch = Utils.readObject(HEAD, File.class);
         writeContents(curBranch, NextCommit.id);
         File CommitFile = Utils.join(Commit_DIR, NextCommit.id);
-        try {
-            CommitFile.createNewFile();
-            writeObject(CommitFile, NextCommit);
-        } catch (Exception e) {
-            // Do nothing
-        }
-
+        writeObject(CommitFile, NextCommit);
     }
 
     /**
@@ -140,7 +131,7 @@ public class Repository {
     }
 
     public static void globalLog() {
-        for (String f : Utils.plainFilenamesIn(Commit_DIR)) {
+        for (String f : plainFilenamesIn(Commit_DIR)) {
             try {
                 System.out.print(Commit.toStringSingle(f));
             } catch (Exception e) {
@@ -151,8 +142,8 @@ public class Repository {
     }
 
     public static void status() {
-        String head = Utils.headCommit().id;
-        Blob Staged = Utils.readObject(stageArea_Maps, Blob.class);
+        String head = headCommit().id;
+        Blob Staged = readObject(stageArea_Maps, Blob.class);
         StringBuilder sb = new StringBuilder("=== Branches ===\n");
         // sb.append(status(head));
         sb.append("*master\n");
@@ -209,7 +200,7 @@ public class Repository {
     private static void checkoutFailureCase3(Commit branch, Commit current) {
         for (File branchFile : branch.objMaps.Maps.keySet()) {
             if (!branch.objMaps.Maps.get(branchFile).equals(
-                    Utils.sha1(Utils.readContents(branchFile))) &&
+                    Utils.sha1(readContents(branchFile))) &&
                     !current.objMaps.Maps.containsKey(branchFile)) {
                 Utils.exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
             }

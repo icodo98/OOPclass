@@ -42,10 +42,10 @@ public class Repository {
             stageArea_DIR.mkdir();
             stageArea_Maps.createNewFile();
             HEAD.createNewFile();
-            Utils.writeObject(HEAD, MASTER);
+            writeObject(HEAD, MASTER);
             MASTER.createNewFile();
             Blob fMap = new Blob();
-            Utils.writeObject(stageArea_Maps, fMap);
+            writeObject(stageArea_Maps, fMap);
             Commit_DIR.mkdir();
         } catch (Exception e) {
             // Do nothing
@@ -70,8 +70,8 @@ public class Repository {
         if (!AddingFile.exists())
             exitWithError("File does not exist.");
 
-        Blob Staged = Utils.readObject(stageArea_Maps, Blob.class);
-        Commit curCommit = Utils.headCommit();
+        Blob Staged = readObject(stageArea_Maps, Blob.class);
+        Commit curCommit = headCommit();
         Map<File, String> CommittedMap = curCommit.objMaps.Maps;
         String AddingFile_sha1 = sha1(readContents(AddingFile));
 
@@ -85,19 +85,19 @@ public class Repository {
         } else {
             Staged.Maps.put(AddingFile, AddingFile_sha1);
         }
-        Utils.writeObject(stageArea_Maps, Staged);
-        Utils.writeContents(Utils.join(stageArea_DIR, AddingFile_sha1), readContents(AddingFile));
+        writeObject(stageArea_Maps, Staged);
+        writeContents(join(stageArea_DIR, AddingFile_sha1), readContents(AddingFile));
 
     }
 
     public static void commit(String msg) {
         if (msg.isBlank())
-            Utils.exitWithError("Please enter a commit message.");
+            exitWithError("Please enter a commit message.");
         Commit NextCommit = new Commit(msg);
         NextCommit.id = sha1(serialize(NextCommit));
-        File curBranch = Utils.readObject(HEAD, File.class);
+        File curBranch = readObject(HEAD, File.class);
         writeContents(curBranch, NextCommit.id);
-        File CommitFile = Utils.join(Commit_DIR, NextCommit.id);
+        File CommitFile = join(Commit_DIR, NextCommit.id);
         writeObject(CommitFile, NextCommit);
     }
 
@@ -112,8 +112,8 @@ public class Repository {
      */
     public static void rm(String filename) {
         File rmFile = new File(filename);
-        Blob Staged = Utils.readObject(stageArea_Maps, Blob.class);
-        Commit curCommit = Utils.headCommit();
+        Blob Staged = readObject(stageArea_Maps, Blob.class);
+        Commit curCommit = headCommit();
         if (!Staged.Maps.containsKey(rmFile) && !curCommit.objMaps.Maps.containsKey(rmFile))
             exitWithError("No reason to remove the file.");
         if (Staged.Maps.containsKey(rmFile))
@@ -126,7 +126,7 @@ public class Repository {
     }
 
     public static void log() {
-        Commit head = Utils.headCommit();
+        Commit head = headCommit();
         System.out.println(head);
     }
 
@@ -165,18 +165,18 @@ public class Repository {
     }
 
     public static void checkout(String branchName) {
-        File branch = Utils.join(GITLET_DIR, branchName);
-        File head = Utils.readObject(HEAD, File.class);
+        File branch = join(GITLET_DIR, branchName);
+        File head = readObject(HEAD, File.class);
         if (!branch.exists())
-            Utils.exitWithError("No such branch exists.");
+            exitWithError("No such branch exists.");
         if (branch.equals(head))
-            Utils.exitWithError("No need to checkout the current branch.");
-        String branchHeadCommitID = Utils.readContentsAsString(branch);
+            exitWithError("No need to checkout the current branch.");
+        String branchHeadCommitID = readContentsAsString(branch);
         Commit branchHead = Commit.readFromID(branchHeadCommitID);
-        Commit curHead = Utils.headCommit();
+        Commit curHead = headCommit();
         checkoutFailureCase3(branchHead, curHead);
         checkout3(branchHead,curHead);
-        Utils.writeObject(HEAD, branch);
+        writeObject(HEAD, branch);
     }
 
     /**
@@ -200,23 +200,23 @@ public class Repository {
     private static void checkoutFailureCase3(Commit branch, Commit current) {
         for (File branchFile : branch.objMaps.Maps.keySet()) {
             if (!branch.objMaps.Maps.get(branchFile).equals(
-                    Utils.sha1(readContents(branchFile))) &&
+                    sha1(readContents(branchFile))) &&
                     !current.objMaps.Maps.containsKey(branchFile)) {
-                Utils.exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
+                exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
             }
         }
     }
 
     public static void checkout(String command, String fileName) {
         if (!command.equals("--"))
-            Utils.incorrectOperandError();
-        Commit curCommit = Utils.headCommit();
+            incorrectOperandError();
+        Commit curCommit = headCommit();
         overwriteCheckoutFile(curCommit, new File(fileName));
     }
 
     public static void checkout(String CommitId, String command, String fileName) {
         if (!command.equals("--"))
-            Utils.incorrectOperandError();
+            incorrectOperandError();
         Commit curCommit = Commit.readFromID(CommitId);
         overwriteCheckoutFile(curCommit, new File(fileName));
     }
@@ -226,9 +226,9 @@ public class Repository {
      */
     private static void overwriteCheckoutFile(Commit tarCommit, File fileName) {
         if (!tarCommit.objMaps.Maps.containsKey(fileName))
-            Utils.exitWithError("File does noe exist in that commit.");
+            exitWithError("File does noe exist in that commit.");
         String checkoutContents = readContentsAsString(
-                Utils.join(Commit_DIR, tarCommit.objMaps.Maps.get(fileName)));
+                join(Commit_DIR, tarCommit.objMaps.Maps.get(fileName)));
         if (!fileName.exists()) {
             try {
                 fileName.createNewFile();
@@ -242,7 +242,7 @@ public class Repository {
     public static void find(String commitMessage) {
         Commit curCommit;
         boolean notFound = true;
-        for (String f : Utils.plainFilenamesIn(Commit_DIR)) {
+        for (String f : plainFilenamesIn(Commit_DIR)) {
             try {
                 curCommit = Commit.readFromID(f);
                 if (commitMessage.equals(curCommit.message)) {
@@ -254,17 +254,17 @@ public class Repository {
             }
         }
         if (notFound)
-            Utils.exitWithError("Found no commit with that message.");
+            exitWithError("Found no commit with that message.");
     }
 
     public static void branch(String branchName) {
-        File branchFile = Utils.join(GITLET_DIR, branchName);
-        File curBranch = Utils.readObject(HEAD, File.class);
+        File branchFile = join(GITLET_DIR, branchName);
+        File curBranch = readObject(HEAD, File.class);
         try {
             if (branchFile.createNewFile()) {
-                Utils.writeContents(branchFile, Utils.readContents(curBranch));
+                writeContents(branchFile, readContents(curBranch));
             } else {
-                Utils.exitWithError("A branch with that name already exists.");
+                exitWithError("A branch with that name already exists.");
             }
         } catch (Exception e) {
             // Do nothing
@@ -273,20 +273,20 @@ public class Repository {
     }
 
     public static void rmBranch(String branchName) {
-        File branchFile = Utils.join(GITLET_DIR, branchName);
+        File branchFile = join(GITLET_DIR, branchName);
         if (branchFile.exists()) {
-            if (Utils.readObject(HEAD, File.class).equals(branchFile))
-                Utils.exitWithError("Cannot remove the current branch.");
+            if (readObject(HEAD, File.class).equals(branchFile))
+                exitWithError("Cannot remove the current branch.");
             else
                 branchFile.delete();
         } else {
-            Utils.exitWithError("A branch with that name does not exist.");
+            exitWithError("A branch with that name does not exist.");
         }
     }
 
     public static void reset(String CommitID) {
         Commit resetCommit = Commit.readFromID(CommitID);
-        Commit curHead = Utils.headCommit();
+        Commit curHead = headCommit();
         checkoutFailureCase3(resetCommit, curHead);
         checkout3(resetCommit,curHead);
         File curBranch = readObject(HEAD, File.class);
@@ -294,14 +294,14 @@ public class Repository {
     }
     public static void merge(String branchName){
         String spiltPointID = spiltPoint(branchName);
-        String cur = Utils.headCommit().id;
+        String cur = headCommit().id;
         String branch = readContentsAsString(join(GITLET_DIR,branchName));
         if(spiltPointID.equals(cur)) {
             checkout(branchName);
-            Utils.exitWithError("Current branch fast-forwarded.");
+            exitWithError("Current branch fast-forwarded.");
         }
         if(spiltPointID.equals(branch)){
-            Utils.exitWithError("Given branch is an ancestor of the current branch.");
+            exitWithError("Given branch is an ancestor of the current branch.");
         }
 
 
@@ -309,7 +309,7 @@ public class Repository {
     }
     private static String spiltPoint(String branchName){
         File cur = readObject(HEAD,File.class);
-        File branch = Utils.join(GITLET_DIR,branchName);
+        File branch = join(GITLET_DIR,branchName);
         ArrayList<String> curHistory = branchHistory(cur);
         ArrayList<String> braHistory = branchHistory(branch);
         curHistory.retainAll(braHistory);

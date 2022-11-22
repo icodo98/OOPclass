@@ -25,7 +25,7 @@ public class Repository {
     public static final File stageArea_DIR = join(GITLET_DIR, "stageArea");
     public static final File Commit_DIR = join(GITLET_DIR, "Commits");
     public static final File HEAD = join(GITLET_DIR, "HEAD");
-    public static final File MASTER = join(GITLET_DIR, "MASTER");
+    public static final File MASTER = join(GITLET_DIR, "master");
 
     /**
      * The function for handling init argument.
@@ -142,11 +142,18 @@ public class Repository {
     }
 
     public static void status() {
-        String head = headCommit().id;
         Blob Staged = readObject(stageArea_Maps, Blob.class);
         StringBuilder sb = new StringBuilder("=== Branches ===\n");
-        // sb.append(status(head));
-        sb.append("*master\n");
+        String curBranch = readObject(HEAD, File.class).getName();
+        List<String> branches = plainFilenamesIn(GITLET_DIR);
+        branches.sort(Comparator.naturalOrder());
+        for (String s : branches
+             ) {
+            if(s.equals(curBranch)) sb.append("*");
+            if(s.equals("HEAD")) continue;
+            sb.append(s);
+            sb.append("\n");
+        }
         sb.append(Staged.toString());
         sb.append("\n");
         sb.append("=== Modifications Not Staged for Commit ===\n");

@@ -30,10 +30,30 @@ public class Commit implements Serializable {
     public Blob objMaps;
     public ZonedDateTime createdTime;
     public String parent;
+    public String parent2;
     public String message;
 
 
     public Commit(String message){
+        this.message = message;
+        try {
+            Commit parent = Utils.headCommit();
+            this.parent = parent.id;
+            this.objMaps = parent.objMaps;
+        } catch (IllegalArgumentException e){
+            this.parent = null;
+            this.objMaps = new Blob();
+        }
+        if(message != "initial commit"){
+            this.createdTime = ZonedDateTime.now();
+            mergeStagedFile();
+            ClearStageArea();
+        }
+        else {
+            this.createdTime = new Timestamp(0).toLocalDateTime().atZone(ZoneId.of("UTC"));
+        }
+    }
+    public Commit(String message,String p1,String p2){
         this.message = message;
         try {
             Commit parent = Utils.headCommit();

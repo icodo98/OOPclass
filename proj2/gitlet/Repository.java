@@ -161,16 +161,6 @@ public class Repository {
         sb.append("\n");
         System.out.println(sb);
     }
-
-    public static String status(String curCommitID) {
-        if (curCommitID == null)
-            return "";
-        Commit curCommit = Commit.readFromID(curCommitID);
-        StringBuilder retrunSB = new StringBuilder(curCommit.id);
-        retrunSB.append("\n");
-        return retrunSB + status(curCommit.parent);
-    }
-
     public static void checkout(String branchName) {
         File branch = join(GITLET_DIR, branchName);
         File head = readObject(HEAD, File.class);
@@ -300,9 +290,14 @@ public class Repository {
         writeContents(curBranch,CommitID);
     }
     public static void merge(String branchName){
-        String spiltPointID = spiltPoint(branchName);
+        Blob Staged = readObject(stageArea_Maps, Blob.class);
+        if(Staged.Maps.size() == 0 && Staged.removalMaps.size() == 0) exitWithError("You have uncommitted changes.");
+        if(!join(GITLET_DIR,branchName).exists()) exitWithError("A branch with that name does not exist.");
         String cur = headCommit().id;
         String branch = readContentsAsString(join(GITLET_DIR,branchName));
+        if(cur.equals(branch)) exitWithError("Cannot merge a branch with itself.");
+
+        String spiltPointID = spiltPoint(branchName);
         if(spiltPointID.equals(cur)) {
             checkout(branchName);
             exitWithError("Current branch fast-forwarded.");
@@ -310,6 +305,76 @@ public class Repository {
         if(spiltPointID.equals(branch)){
             exitWithError("Given branch is an ancestor of the current branch.");
         }
+        Map <File,String> curMap = Commit.readFromID(cur).objMaps.Maps;
+        Map <File,String> branchMap = Commit.readFromID(branch).objMaps.Maps;
+        Map <File,String> spointMap = Commit.readFromID(spiltPointID).objMaps.Maps;
+        Set<File> allFiles = curMap.keySet();
+        allFiles.addAll(branchMap.keySet());
+        allFiles.addAll(spointMap.keySet());
+        String fname,c,b,s;
+        for (File f: allFiles
+             ) {
+            fname = whichMap(f,curMap,branchMap,spointMap);
+            c = curMap.get(f);
+            b = branchMap.get(f);
+            s = spointMap.get(f);
+            switch (fname){
+                case "cbs":
+                    if(!c.equals(b)){
+                        if(c.equals(s)) mergeConflict(f,c,b);
+                        else {
+                            checkout(branch,"--",f.toString());
+                            add(f.toString());
+                        }
+                    }
+                    break;
+                case "cs":
+                    if(c.equals(s)) rm(f.toString());
+                    else mergeConflict(f,c,b);
+                    break;
+                case "sb":
+                    if(!s.equals(b)) mergeConflict(f,c,b);
+                    break;
+                case "cb":
+                    if(!c.equals(b)) mergeConflict(f,c,b);
+                    break;
+                case "s":
+                case "c":
+                    break;
+                case "b":
+                    checkout(branch,"--",f.toString());
+                    add(f.toString());
+                    break;
+                default:
+                    Utils.exitWithError("no such file in both maps");
+            }
+        }
+
+        System.out.println("Merged " + branchName + " into " +
+                readObject(HEAD,File.class).getName() + ".");
+    }
+    private static void mergeConflict(File f, String h,String b){
+        System.out.println("Encountered a merge conflict.");
+        StringBuilder contents = new StringBuilder();
+        contents.append("<<<<<<< HEAD\n");
+        if(h != null) contents.append(readContentsAsString(join(Commit_DIR,h)));
+        contents.append("=======");
+        if(b != null) contents.append(readContentsAsString(join(Commit_DIR,b)));
+        contents.append(">>>>>>>");
+        writeContents(f,contents.toString());
+    }
+    private static String whichMap(File f, Map<File,String> Map1, Map<File,String> Map2, Map<File,String> Map3){
+        boolean cur = Map1.containsKey(f);
+        boolean bra = Map2.containsKey(f);
+        boolean sp = Map3.containsKey(f);
+        if(cur && bra && sp) return "cbs";
+        if(cur && !bra && sp) return "cs";
+        if(cur && bra && !sp) return "cb";
+        if(!cur && bra && sp) return "bs";
+        if(!cur && !bra && sp) return "s";
+        if(cur && !bra && !sp) return "c";
+        if(!cur && bra && !sp) return "b";
+        return null;
     }
     private static String spiltPoint(String branchName){
         File cur = readObject(HEAD,File.class);

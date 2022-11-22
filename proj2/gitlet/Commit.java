@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import static gitlet.Repository.*;
+import static gitlet.Utils.readObject;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /** Represents a gitlet commit object.
@@ -53,26 +54,22 @@ public class Commit implements Serializable {
             this.createdTime = new Timestamp(0).toLocalDateTime().atZone(ZoneId.of("UTC"));
         }
     }
-    public Commit(String message,String p1,String p2){
-        this.message = message;
+    public Commit(String curBranchName, String givenBranchName){
+        this.message = "Merged " + givenBranchName + " into " +
+                curBranchName + ".";
         try {
             Commit parent = Utils.headCommit();
             this.parent = parent.id;
+            this.parent2 = Utils.readContentsAsString(Utils.join(GITLET_DIR,givenBranchName));
             this.objMaps = parent.objMaps;
         } catch (IllegalArgumentException e){
             this.parent = null;
             this.objMaps = new Blob();
         }
-        if(message != "initial commit"){
-            this.createdTime = ZonedDateTime.now();
-            mergeStagedFile();
-            ClearStageArea();
-        }
-        else {
-            this.createdTime = new Timestamp(0).toLocalDateTime().atZone(ZoneId.of("UTC"));
-        }
+        this.createdTime = ZonedDateTime.now();
+        mergeStagedFile();
+        ClearStageArea();
     }
-
 
     /**
      * merge Staged file with current Commits Maps.

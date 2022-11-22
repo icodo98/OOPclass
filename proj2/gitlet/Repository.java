@@ -100,6 +100,14 @@ public class Repository {
         File CommitFile = join(Commit_DIR, NextCommit.id);
         writeObject(CommitFile, NextCommit);
     }
+    public static void commit(String curBranchName, String givenBranchName) {
+        Commit NextCommit = new Commit(curBranchName,givenBranchName);
+        NextCommit.id = sha1(serialize(NextCommit));
+        File curBranch = readObject(HEAD, File.class);
+        writeContents(curBranch, NextCommit.id);
+        File CommitFile = join(Commit_DIR, NextCommit.id);
+        writeObject(CommitFile, NextCommit);
+    }
 
     /**
      * Unstage the file if it is currently staged for addition.
@@ -308,6 +316,11 @@ public class Repository {
         Map <File,String> curMap = Commit.readFromID(cur).objMaps.Maps;
         Map <File,String> branchMap = Commit.readFromID(branch).objMaps.Maps;
         Map <File,String> spointMap = Commit.readFromID(spiltPointID).objMaps.Maps;
+        List<String> untrackedFile = getUntrackedFiles(Commit.readFromID(cur));
+        for (String s: untrackedFile
+             ) {
+            if(branchMap.containsKey(new File(s))) exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
+        }
         Set<File> allFiles = curMap.keySet();
         allFiles.addAll(branchMap.keySet());
         allFiles.addAll(spointMap.keySet());
@@ -349,9 +362,16 @@ public class Repository {
                     Utils.exitWithError("no such file in both maps");
             }
         }
-
-        System.out.println("Merged " + branchName + " into " +
-                readObject(HEAD,File.class).getName() + ".");
+        Repository.commit(readObject(HEAD, File.class).getName(),branchName);
+    }
+    private static List<String> getUntrackedFiles(Commit curCommit){
+        Set<File> fileSet = curCommit.objMaps.Maps.keySet();
+        List<String> fileList = plainFilenamesIn(CWD);
+        for (File f: fileSet
+             ) {
+            if(fileList.contains(f.getName())) fileList.remove(f.getName());
+        }
+        return fileList;
     }
     private static void mergeConflict(File f, String h,String b){
         System.out.println("Encountered a merge conflict.");

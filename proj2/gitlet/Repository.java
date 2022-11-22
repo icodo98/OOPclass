@@ -303,9 +303,6 @@ public class Repository {
         if(spiltPointID.equals(branch)){
             exitWithError("Given branch is an ancestor of the current branch.");
         }
-
-
-
     }
     private static String spiltPoint(String branchName){
         File cur = readObject(HEAD,File.class);

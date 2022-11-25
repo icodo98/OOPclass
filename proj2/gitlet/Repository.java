@@ -181,7 +181,7 @@ public class Repository {
         String branchHeadCommitID = readContentsAsString(branch);
         Commit branchHead = Commit.readFromID(branchHeadCommitID);
         Commit curHead = headCommit();
-        checkoutFailureCase3(branchHead, curHead);
+//        checkoutFailureCase3(branchHead, curHead);
         checkout3(branchHead,curHead);
         writeObject(HEAD, branch);
     }
@@ -208,14 +208,16 @@ public class Repository {
      * If a working file is untracked in the current branch and would be OVERWRITTEN by the checkout, error.
      */
     private static void checkoutFailureCase3(Commit branch, Commit current) {
-        for (File branchFile : branch.objMaps.Maps.keySet()) {
-            if(!branchFile.exists()) continue;
-            if (!branch.objMaps.Maps.get(branchFile).equals(
-                    sha1(readContents(branchFile))) &&
-                    !current.objMaps.Maps.containsKey(branchFile)) {
-                exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
-            }
-        }
+        if(getUntrackedFiles(current).size() == 0)
+            Utils.exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
+//        for (File branchFile : branch.objMaps.Maps.keySet()) {
+//            if(!branchFile.exists()) continue;
+//            if (!branch.objMaps.Maps.get(branchFile).equals(
+//                    sha1(readContents(branchFile))) &&
+//                    !current.objMaps.Maps.containsKey(branchFile)) {
+//                exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
+//            }
+//        }
     }
 
     public static void checkout(String command, String fileName) {

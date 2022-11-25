@@ -202,8 +202,12 @@ public class Repository {
 
     }
 
+    /**
+     * If a working file is untracked in the current branch and would be OVERWRITTEN by the checkout, error.
+     */
     private static void checkoutFailureCase3(Commit branch, Commit current) {
         for (File branchFile : branch.objMaps.Maps.keySet()) {
+            if(!branchFile.exists()) continue;
             if (!branch.objMaps.Maps.get(branchFile).equals(
                     sha1(readContents(branchFile))) &&
                     !current.objMaps.Maps.containsKey(branchFile)) {

@@ -303,7 +303,7 @@ public class Repository {
     }
     public static void merge(String branchName){
         Blob Staged = readObject(stageArea_Maps, Blob.class);
-        if(Staged.Maps.size() == 0 && Staged.removalMaps.size() == 0) exitWithError("You have uncommitted changes.");
+        if(Staged.Maps.size() != 0 || Staged.removalMaps.size() != 0) exitWithError("You have uncommitted changes.");
         if(!join(GITLET_DIR,branchName).exists()) exitWithError("A branch with that name does not exist.");
         String cur = headCommit().id;
         String branch = readContentsAsString(join(GITLET_DIR,branchName));

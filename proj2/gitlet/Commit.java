@@ -135,8 +135,17 @@ public class Commit implements Serializable {
     }
 
     private String toString(String curCommitID) {
-        return toStringSingle(curCommitID) + toString(
-                Commit.readFromID(curCommitID).parent);
+        if(curCommitID == null) return"";
+        Commit curCommit = readFromID(curCommitID);
+        StringBuilder returnSB = new StringBuilder(toStringSingle(curCommitID));
+        toString(curCommit.parent,returnSB);
+        return returnSB.toString();
+    }
+    private void toString(String curCommitID,StringBuilder returnSB) {
+        if(curCommitID == null) return;
+        Commit curCommit = readFromID(curCommitID);
+        returnSB.append(toStringSingle(curCommitID));
+        toString(curCommit.parent,returnSB);
     }
     public static Commit readFromID(String ID){
         File CommitFile = Utils.join(Repository.Commit_DIR,ID);

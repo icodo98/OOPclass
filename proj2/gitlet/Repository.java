@@ -320,12 +320,13 @@ public class Repository {
         Map <File,String> curMap = Commit.readFromID(cur).objMaps.Maps;
         Map <File,String> branchMap = Commit.readFromID(branch).objMaps.Maps;
         Map <File,String> spointMap = Commit.readFromID(spiltPointID).objMaps.Maps;
-        List<String> untrackedFile = getUntrackedFiles(Commit.readFromID(cur));
-        for (String s: untrackedFile
-             ) {
-            if(branchMap.containsKey(new File(s))) exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
-        }
-        Set<File> allFiles = curMap.keySet();
+//        List<String> untrackedFile = getUntrackedFiles(Commit.readFromID(cur));
+//        for (String s: untrackedFile
+//             ) {
+//            if(branchMap.containsKey(new File(s))) exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
+//        }
+        Set<File> allFiles = new HashSet<>();
+        allFiles.addAll(curMap.keySet());
         allFiles.addAll(branchMap.keySet());
         allFiles.addAll(spointMap.keySet());
         String fname,c,b,s;
@@ -406,7 +407,7 @@ public class Repository {
         ArrayList<String> curHistory = branchHistory(cur);
         ArrayList<String> braHistory = branchHistory(branch);
         curHistory.retainAll(braHistory);
-        return curHistory.get(curHistory.size() - 1);
+        return curHistory.get(0);
     }
     private static ArrayList<String> branchHistory(File branch){
         String curCommit = readContentsAsString(branch);

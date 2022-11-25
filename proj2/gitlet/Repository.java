@@ -320,11 +320,11 @@ public class Repository {
         Map <File,String> curMap = Commit.readFromID(cur).objMaps.Maps;
         Map <File,String> branchMap = Commit.readFromID(branch).objMaps.Maps;
         Map <File,String> spointMap = Commit.readFromID(spiltPointID).objMaps.Maps;
-//        List<String> untrackedFile = getUntrackedFiles(Commit.readFromID(cur));
-//        for (String s: untrackedFile
-//             ) {
-//            if(branchMap.containsKey(new File(s))) exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
-//        }
+        List<String> untrackedFile = getUntrackedFiles(Commit.readFromID(cur));
+        for (String s: untrackedFile
+             ) {
+            if(branchMap.containsKey(new File(s))) exitWithError("There is an untracked file in the way; delete it, or add and commit it first."+s);
+        }
         Set<File> allFiles = new HashSet<>();
         allFiles.addAll(curMap.keySet());
         allFiles.addAll(branchMap.keySet());
@@ -339,10 +339,13 @@ public class Repository {
             switch (fname){
                 case "cbs":
                     if(!c.equals(b)){
-                        if(c.equals(s)) mergeConflict(f,c,b);
-                        else {
+                        if(s.equals(c)){
                             checkout(branch,"--",f.toString());
                             add(f.toString());
+                        } else if (s.equals(b)) {
+                            //do nothing
+                        }else {
+                            mergeConflict(f,c,b);
                         }
                     }
                     break;
@@ -350,7 +353,7 @@ public class Repository {
                     if(c.equals(s)) rm(f.toString());
                     else mergeConflict(f,c,b);
                     break;
-                case "sb":
+                case "bs":
                     if(!s.equals(b)) mergeConflict(f,c,b);
                     break;
                 case "cb":
@@ -371,7 +374,7 @@ public class Repository {
     }
     private static List<String> getUntrackedFiles(Commit curCommit){
         Set<File> fileSet = curCommit.objMaps.Maps.keySet();
-        List<String> fileList = plainFilenamesIn(CWD);
+        ArrayList<String> fileList = new ArrayList<>(plainFilenamesIn(CWD));
         for (File f: fileSet
              ) {
             if(fileList.contains(f.getName())) fileList.remove(f.getName());

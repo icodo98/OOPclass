@@ -119,9 +119,9 @@ public class Commit implements Serializable {
         returnSB.append("\n");
         if(curCommit.parent2 != null){
             returnSB.append("Merge: ");
-            returnSB.append(curCommit.parent, 0, 6);
+            returnSB.append(curCommit.parent, 0, 7);
             returnSB.append(" ");
-            returnSB.append(curCommit.parent2, 0, 6);
+            returnSB.append(curCommit.parent2, 0, 7);
             returnSB.append("\n");
         }
         returnSB.append("Date: ");

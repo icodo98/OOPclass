@@ -392,7 +392,7 @@ public class Repository {
         StringBuilder contents = new StringBuilder();
         contents.append("<<<<<<< HEAD\n");
         if(h != null) contents.append(readContentsAsString(join(Commit_DIR,h)));
-        contents.append("=======");
+        contents.append("=======\n");
         if(b != null) contents.append(readContentsAsString(join(Commit_DIR,b)));
         contents.append(">>>>>>>");
         writeContents(f,contents.toString());

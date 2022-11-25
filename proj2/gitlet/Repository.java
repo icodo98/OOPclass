@@ -208,7 +208,7 @@ public class Repository {
      * If a working file is untracked in the current branch and would be OVERWRITTEN by the checkout, error.
      */
     private static void checkoutFailureCase3(Commit branch, Commit current) {
-        if(getUntrackedFiles(current).size() == 0)
+        if(getUntrackedFiles(current).size() != 0)
             Utils.exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
 //        for (File branchFile : branch.objMaps.Maps.keySet()) {
 //            if(!branchFile.exists()) continue;
@@ -376,7 +376,8 @@ public class Repository {
                     Utils.exitWithError("no such file in both maps");
             }
         }
-        if(!mergeConflict) Repository.commit(readObject(HEAD, File.class).getName(),branchName);
+//        if(!mergeConflict)
+        Repository.commit(readObject(HEAD, File.class).getName(),branchName);
     }
     private static List<String> getUntrackedFiles(Commit curCommit){
         Set<File> fileSet = curCommit.objMaps.Maps.keySet();

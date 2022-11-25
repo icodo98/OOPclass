@@ -373,7 +373,7 @@ public class Repository {
                     add(f.toString());
                     break;
                 default:
-                    Utils.exitWithError("no such file in both maps");
+                    //Utils.exitWithError("no such file in both maps");
             }
         }
 //        if(!mergeConflict)

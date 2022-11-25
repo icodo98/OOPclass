@@ -117,7 +117,13 @@ public class Commit implements Serializable {
         returnSB.append("commit ");
         returnSB.append(curCommit.id);
         returnSB.append("\n");
-
+        if(curCommit.parent2 != null){
+            returnSB.append("Merge: ");
+            returnSB.append(curCommit.parent, 0, 6);
+            returnSB.append(" ");
+            returnSB.append(curCommit.parent2, 0, 6);
+            returnSB.append("\n");
+        }
         returnSB.append("Date: ");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("eee MMM d HH:mm:ss yyyy xx", Locale.ENGLISH);
         returnSB.append(curCommit.createdTime.format(formatter));
@@ -136,6 +142,14 @@ public class Commit implements Serializable {
         returnSB.append("commit ");
         returnSB.append(curCommit.id);
         returnSB.append("\n");
+
+        if(curCommit.parent2 != null){
+            returnSB.append("Merge: ");
+            returnSB.append(curCommit.parent, 0, 6);
+            returnSB.append(" ");
+            returnSB.append(curCommit.parent2, 0, 6);
+            returnSB.append("\n");
+        }
 
         returnSB.append("Date: ");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("eee MMM d HH:mm:ss yyyy xx", Locale.ENGLISH);

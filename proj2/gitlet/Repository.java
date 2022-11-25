@@ -181,7 +181,7 @@ public class Repository {
         String branchHeadCommitID = readContentsAsString(branch);
         Commit branchHead = Commit.readFromID(branchHeadCommitID);
         Commit curHead = headCommit();
-//        checkoutFailureCase3(branchHead, curHead);
+        checkoutFailureCase3(branchHead, curHead);
         checkout3(branchHead,curHead);
         writeObject(HEAD, branch);
     }
@@ -335,6 +335,7 @@ public class Repository {
         allFiles.addAll(branchMap.keySet());
         allFiles.addAll(spointMap.keySet());
         String fname,c,b,s;
+        boolean mergeConflict = false;
         for (File f: allFiles
              ) {
             fname = whichMap(f,curMap,branchMap,spointMap);
@@ -350,19 +351,19 @@ public class Repository {
                         } else if (s.equals(b)) {
                             //do nothing
                         }else {
-                            mergeConflict(f,c,b);
+                            mergeConflict =  mergeConflict(f,c,b);
                         }
                     }
                     break;
                 case "cs":
                     if(c.equals(s)) rm(f.toString());
-                    else mergeConflict(f,c,b);
+                    else mergeConflict = mergeConflict(f,c,b);
                     break;
                 case "bs":
-                    if(!s.equals(b)) mergeConflict(f,c,b);
+                    if(!s.equals(b)) mergeConflict = mergeConflict(f,c,b);
                     break;
                 case "cb":
-                    if(!c.equals(b)) mergeConflict(f,c,b);
+                    if(!c.equals(b)) mergeConflict = mergeConflict(f,c,b);
                     break;
                 case "s":
                 case "c":
@@ -375,18 +376,17 @@ public class Repository {
                     Utils.exitWithError("no such file in both maps");
             }
         }
-        Repository.commit(readObject(HEAD, File.class).getName(),branchName);
+        if(!mergeConflict) Repository.commit(readObject(HEAD, File.class).getName(),branchName);
     }
     private static List<String> getUntrackedFiles(Commit curCommit){
         Set<File> fileSet = curCommit.objMaps.Maps.keySet();
         ArrayList<String> fileList = new ArrayList<>(plainFilenamesIn(CWD));
-        for (File f: fileSet
-             ) {
+        for (File f: fileSet) {
             if(fileList.contains(f.getName())) fileList.remove(f.getName());
         }
         return fileList;
     }
-    private static void mergeConflict(File f, String h,String b){
+    private static boolean mergeConflict(File f, String h,String b){
         System.out.println("Encountered a merge conflict.");
         StringBuilder contents = new StringBuilder();
         contents.append("<<<<<<< HEAD\n");
@@ -395,6 +395,7 @@ public class Repository {
         if(b != null) contents.append(readContentsAsString(join(Commit_DIR,b)));
         contents.append(">>>>>>>");
         writeContents(f,contents.toString());
+        return true;
     }
     private static String whichMap(File f, Map<File,String> Map1, Map<File,String> Map2, Map<File,String> Map3){
         boolean cur = Map1.containsKey(f);

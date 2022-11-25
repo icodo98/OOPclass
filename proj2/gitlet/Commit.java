@@ -135,30 +135,8 @@ public class Commit implements Serializable {
     }
 
     private String toString(String curCommitID) {
-        if(curCommitID == null) return "";
-        Commit curCommit = readFromID(curCommitID);
-        StringBuilder returnSB = new StringBuilder("===");
-        returnSB.append("\n");
-        returnSB.append("commit ");
-        returnSB.append(curCommit.id);
-        returnSB.append("\n");
-
-        if(curCommit.parent2 != null){
-            returnSB.append("Merge: ");
-            returnSB.append(curCommit.parent, 0, 6);
-            returnSB.append(" ");
-            returnSB.append(curCommit.parent2, 0, 6);
-            returnSB.append("\n");
-        }
-
-        returnSB.append("Date: ");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("eee MMM d HH:mm:ss yyyy xx", Locale.ENGLISH);
-        returnSB.append(curCommit.createdTime.format(formatter));
-        returnSB.append("\n");
-
-        returnSB.append(curCommit.message);
-        returnSB.append("\n\n");
-        return returnSB + toString(curCommit.parent);
+        return toStringSingle(curCommitID) + toString(
+                Commit.readFromID(curCommitID).parent);
     }
     public static Commit readFromID(String ID){
         File CommitFile = Utils.join(Repository.Commit_DIR,ID);

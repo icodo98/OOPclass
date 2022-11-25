@@ -153,12 +153,14 @@ public class Repository {
         Blob Staged = readObject(stageArea_Maps, Blob.class);
         StringBuilder sb = new StringBuilder("=== Branches ===\n");
         String curBranch = readObject(HEAD, File.class).getName();
-        List<String> branches = plainFilenamesIn(GITLET_DIR);
+        ArrayList<String> branches = new ArrayList<>(plainFilenamesIn(GITLET_DIR));
         branches.sort(Comparator.naturalOrder());
+        branches.remove("HEAD");
+        branches.remove(curBranch);
+        branches.add(0,curBranch);
+        sb.append("*");
         for (String s : branches
              ) {
-            if(s.equals(curBranch)) sb.append("*");
-            if(s.equals("HEAD")) continue;
             sb.append(s);
             sb.append("\n");
         }
@@ -320,11 +322,12 @@ public class Repository {
         Map <File,String> curMap = Commit.readFromID(cur).objMaps.Maps;
         Map <File,String> branchMap = Commit.readFromID(branch).objMaps.Maps;
         Map <File,String> spointMap = Commit.readFromID(spiltPointID).objMaps.Maps;
-        List<String> untrackedFile = getUntrackedFiles(Commit.readFromID(cur));
-        for (String s: untrackedFile
-             ) {
-            if(branchMap.containsKey(new File(s))) exitWithError("There is an untracked file in the way; delete it, or add and commit it first."+s);
-        }
+        checkoutFailureCase3(Commit.readFromID(branch),Commit.readFromID(cur));
+//        List<String> untrackedFile = getUntrackedFiles(Commit.readFromID(cur));
+//        for (String s: untrackedFile
+//             ) {
+//            if(branchMap.containsKey(new File(s))) exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
+//        }
         Set<File> allFiles = new HashSet<>();
         allFiles.addAll(curMap.keySet());
         allFiles.addAll(branchMap.keySet());

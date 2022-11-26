@@ -62,7 +62,6 @@ public class Repository {
      * if the file does not exist, throw error.
      */
     public static void add(String Filename) {
-        // check if that init run.
         if (!stageArea_Maps.exists())
             notInitializedError();
 
@@ -210,14 +209,6 @@ public class Repository {
     private static void checkoutFailureCase3(Commit branch, Commit current) {
         if(getUntrackedFiles(current).size() != 0)
             Utils.exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
-//        for (File branchFile : branch.objMaps.Maps.keySet()) {
-//            if(!branchFile.exists()) continue;
-//            if (!branch.objMaps.Maps.get(branchFile).equals(
-//                    sha1(readContents(branchFile))) &&
-//                    !current.objMaps.Maps.containsKey(branchFile)) {
-//                exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
-//            }
-//        }
     }
 
     public static void checkout(String command, String fileName) {
@@ -325,11 +316,6 @@ public class Repository {
         Map <File,String> branchMap = Commit.readFromID(branch).objMaps.Maps;
         Map <File,String> spointMap = Commit.readFromID(spiltPointID).objMaps.Maps;
         checkoutFailureCase3(Commit.readFromID(branch),Commit.readFromID(cur));
-//        List<String> untrackedFile = getUntrackedFiles(Commit.readFromID(cur));
-//        for (String s: untrackedFile
-//             ) {
-//            if(branchMap.containsKey(new File(s))) exitWithError("There is an untracked file in the way; delete it, or add and commit it first.");
-//        }
         Set<File> allFiles = new HashSet<>();
         allFiles.addAll(curMap.keySet());
         allFiles.addAll(branchMap.keySet());
@@ -373,7 +359,6 @@ public class Repository {
                     add(f.toString());
                     break;
                 default:
-                    //Utils.exitWithError("no such file in both maps");
             }
         }
         if(mergeConflict) {

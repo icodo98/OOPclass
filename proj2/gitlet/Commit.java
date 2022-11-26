@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import static gitlet.Repository.*;
-import static gitlet.Utils.readObject;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /** Represents a gitlet commit object.

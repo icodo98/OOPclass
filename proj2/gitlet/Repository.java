@@ -376,8 +376,12 @@ public class Repository {
                     //Utils.exitWithError("no such file in both maps");
             }
         }
-//        if(!mergeConflict)
-        Repository.commit(readObject(HEAD, File.class).getName(),branchName);
+        if(mergeConflict) {
+            System.out.println("Encountered a merge conflict.");
+        }else {
+            Repository.commit(readObject(HEAD, File.class).getName(),branchName);
+
+        }
     }
     private static List<String> getUntrackedFiles(Commit curCommit){
         Set<File> fileSet = curCommit.objMaps.Maps.keySet();
@@ -388,7 +392,6 @@ public class Repository {
         return fileList;
     }
     private static boolean mergeConflict(File f, String h,String b){
-        System.out.println("Encountered a merge conflict.");
         StringBuilder contents = new StringBuilder();
         contents.append("<<<<<<< HEAD\n");
         if(h != null) contents.append(readContentsAsString(join(Commit_DIR,h)));
